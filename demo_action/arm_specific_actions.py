@@ -250,8 +250,9 @@ if __name__ == '__main__':
     # 机器人进入到手臂规划模式
     robot_instance.set_robot_arm_ctl_mode(True)
 
-    # 机器人执行 动作 打招呼
-    robot_arm_action(robot_instance, "wave_arm")
+    for i in range(5):
+        # 机器人执行 动作 打招呼
+        robot_arm_action(robot_instance, "bowing")
 
     # 等待2s 
     time.sleep(2)
