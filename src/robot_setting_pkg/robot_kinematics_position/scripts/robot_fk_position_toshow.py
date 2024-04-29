@@ -22,8 +22,8 @@ class WristPositionPublisher:
         self.joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, self.joint_callback)
 
         # 发布末端执行器位姿信息
-        self.l_hand_pub = rospy.Publisher('l_hand_position_end', PoseStamped, queue_size=10)
-        self.r_hand_pub = rospy.Publisher('r_hand_position_end', PoseStamped, queue_size=10)
+        self.l_hand_pub = rospy.Publisher('l_hand_position_end_fk', PoseStamped, queue_size=10)
+        self.r_hand_pub = rospy.Publisher('r_hand_position_end_fk', PoseStamped, queue_size=10)
 
         # 初始化运动学正解服务客户端
         self.fk_client = rospy.ServiceProxy('/compute_fk', GetPositionFK)

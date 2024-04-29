@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>robot_fk_position</name>
+  <name>robot_kinematics_position</name>
   <version>0.0.0</version>
-  <description>The robot_fk_position package</description>
+  <description>The robot_kinematics_position package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
