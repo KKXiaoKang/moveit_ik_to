@@ -1,0 +1,5 @@
+string arm
+geometry_msgs/PoseStamped target_pose
+---
+bool ok_flag
+trajectory_msgs/JointTrajectory  traj
