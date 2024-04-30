@@ -81,7 +81,7 @@ class Planner(Base):
         traj = self.optimizer.min_variance_traj(trajs)
         traj = self.optimizer.retime_l_traj(traj)
         dump_traj("traj/traj_l.json", traj)
-        self.l_move_group.execute(traj, wait=True)
+        self.l_move_group.execute(traj, wait=False)
 
         return traj
     
@@ -113,7 +113,7 @@ class Planner(Base):
         traj = self.optimizer.min_variance_traj(trajs)
         traj = self.optimizer.retime_r_traj(traj)
         dump_traj("traj/traj_r.json", traj)
-        self.r_move_group.execute(traj, wait=True)
+        self.r_move_group.execute(traj, wait=False)
 
         return traj
     
@@ -145,7 +145,7 @@ class Planner(Base):
         traj = self.optimizer.min_variance_traj(trajs)
         traj = self.optimizer.retime_l_traj(traj)
         dump_traj("traj/traj_l.json", traj)
-        self.l_move_group.execute(traj, wait=True)
+        self.l_move_group.execute(traj, wait=False)
 
         return traj
     
@@ -177,7 +177,7 @@ class Planner(Base):
         traj = self.optimizer.min_variance_traj(trajs)
         traj = self.optimizer.retime_r_traj(traj)
         dump_traj("traj/traj_r.json", traj)
-        self.r_move_group.execute(traj, wait=True)
+        self.r_move_group.execute(traj, wait=False)
 
         return traj
 
