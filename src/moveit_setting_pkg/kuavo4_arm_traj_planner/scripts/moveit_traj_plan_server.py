@@ -6,8 +6,9 @@ from kuavo4_arm_traj_planner.srv import arm_moveit_joint, arm_moveit_jointReques
 from kuavo4_arm_traj_planner.srv import arm_moveit_pose, arm_moveit_poseRequest, arm_moveit_poseResponse
 from planner import Planner
 from utils import angle_to_rad
+from publisher import Publisher
 
-def handle_pose_request(req, planner):
+def handle_pose_request(req, planner, publisher):
 
     response = arm_moveit_poseResponse()
     response.ok_flag = True
@@ -25,8 +26,10 @@ def handle_pose_request(req, planner):
     # 根据请求的姿态规划轨迹
     if req.arm == 'l':
         robot_traj = planner.goto_l_pose_config(target_pose)
+        publisher.publish_l_arm_traj(robot_traj)
     elif req.arm == 'r':
         robot_traj = planner.goto_r_pose_config(target_pose)
+        publisher.publish_r_arm_traj(robot_traj)
     else:
         rospy.logerr("Invalid arm specified.")
         return response
@@ -41,7 +44,7 @@ def handle_pose_request(req, planner):
     
     return response
 
-def handle_joint_request(req, planner):
+def handle_joint_request(req, planner, publisher):
     
     response = arm_moveit_jointResponse()
     response.ok_flag = True
@@ -52,8 +55,10 @@ def handle_joint_request(req, planner):
     # 根据关节位置规划轨迹
     if req.arm == 'l':
         robot_traj = planner.goto_l_joint_config(joints)
+        publisher.publish_l_arm_traj(robot_traj)
     elif req.arm == 'r':
         robot_traj = planner.goto_r_joint_config(joints)
+        publisher.publish_r_arm_traj(robot_traj)
     else:
         rospy.logerr("Invalid arm specified.")
         return response
@@ -76,13 +81,16 @@ def main():
     planner = Planner()
     planner.init_arm()
     
+    # 创建发布器/发布数据到/kuavo_arm_traj
+    publisher = Publisher()
+
     # 创建服务，处理末端姿态请求
-    rospy.Service('/kuavo_arm_l_moveit_pose', arm_moveit_pose, lambda req: handle_pose_request(req, planner))
-    rospy.Service('/kuavo_arm_r_moveit_pose', arm_moveit_pose, lambda req: handle_pose_request(req, planner))
+    rospy.Service('/kuavo_arm_l_moveit_pose', arm_moveit_pose, lambda req: handle_pose_request(req, planner, publisher))
+    rospy.Service('/kuavo_arm_r_moveit_pose', arm_moveit_pose, lambda req: handle_pose_request(req, planner, publisher))
     
     # 创建服务，处理关节位置请求
-    rospy.Service('/kuavo_arm_l_moveit_joint', arm_moveit_joint, lambda req: handle_joint_request(req, planner))
-    rospy.Service('/kuavo_arm_r_moveit_joint', arm_moveit_joint, lambda req: handle_joint_request(req, planner))
+    rospy.Service('/kuavo_arm_l_moveit_joint', arm_moveit_joint, lambda req: handle_joint_request(req, planner, publisher))
+    rospy.Service('/kuavo_arm_r_moveit_joint', arm_moveit_joint, lambda req: handle_joint_request(req, planner, publisher))
     
     rospy.spin()
 
