@@ -1,0 +1,5 @@
+string arm
+sensor_msgs/JointState target_joint
+---
+bool ok_flag
+trajectory_msgs/JointTrajectory  traj
