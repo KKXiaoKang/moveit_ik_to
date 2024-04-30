@@ -9,6 +9,6 @@ kuavos4_moveit_config: moveit 配置功能包
 * robot_setting_pkg : 机器人参数配置文件夹
 ```bash
 kuavo: 机器人控制功能包 
-robot_fk_position: 机器人运动学功能包
+robot_kinematics_position: 机器人运动学功能包
 ```
 ---
