@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-
+import rospy
+from geometry_msgs.msg import Pose
 from planner import Planner
 from utils import dump_traj, angle_to_rad
 
 
 if __name__ == "__main__":
+    rospy.init_node('trajectory_planning_example')
+
     planner = Planner()
     planner.init_arm()
     
@@ -40,18 +43,34 @@ if __name__ == "__main__":
     """动作设计示例 —— 挥手
     """
     
-    joints = angle_to_rad([-80, 0, 0, -20, 90, 0, 0])
-    traj = planner.goto_r_joint_config(joints)
-    dump_traj("traj/home/traj_r_home1.json", traj)
+    # joints = angle_to_rad([-80, 0, 0, -20, 90, 0, 0])
+    # traj = planner.goto_r_joint_config(joints)
+    # dump_traj("traj/home/traj_r_home1.json", traj)
 
-    joints = angle_to_rad([20, -10, 30, -85, 0, 0, 0])
-    traj = planner.goto_r_joint_config(joints)
-    dump_traj("traj/home/traj_r_home2.json", traj)
+    # joints = angle_to_rad([20, -10, 30, -85, 0, 0, 0])
+    # traj = planner.goto_r_joint_config(joints)
+    # dump_traj("traj/home/traj_r_home2.json", traj)
 
-    joints = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
-    traj = planner.goto_r_joint_config(joints)
-    dump_traj("traj/home/traj_r_home3.json", traj)
+    # joints = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
+    # traj = planner.goto_r_joint_config(joints)
+    # dump_traj("traj/home/traj_r_home3.json", traj)
     
+    # 创建左手末端的轨迹点
+    # 0.1 | 0.2 | 0.1
+    # 0.2 | 0.3 | 0.1
+    # 0.2 | 0.2 | 0.1
+    # 0.2 | 0.2 | 0.3
+    point = Pose()
+    point.position.x = 0.2  # x坐标
+    point.position.y = 0.3  # y坐标
+    point.position.z = 0.1  # z坐标
+    point.orientation.x = 0.0  # 四元数的x分量
+    point.orientation.y = 0.0  # 四元数的y分量
+    point.orientation.z = 0.0  # 四元数的z分量
+    point.orientation.w = 1.0  # 四元数的w分量
+
+    traj = planner.goto_l_pose_config(point)
+    dump_traj("traj/point_to_show/traj_point_to_show2.json", traj)
 
     """查看完整设计轨迹示例 —— 挥手
 
