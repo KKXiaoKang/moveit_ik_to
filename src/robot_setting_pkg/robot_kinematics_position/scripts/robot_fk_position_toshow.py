@@ -47,6 +47,9 @@ class WristPositionPublisher:
         self.r_hand_plot, = self.ax.plot([], [], [], label='Right Hand')
         self.ax.legend()
 
+        # 添加原点标记点
+        self.origin_plot, = self.ax.plot([0], [0], [0], 'ro')
+
         # 使用 FuncAnimation 定期更新绘图
         self.ani = FuncAnimation(self.fig, self.update_plot, interval=100)
 
