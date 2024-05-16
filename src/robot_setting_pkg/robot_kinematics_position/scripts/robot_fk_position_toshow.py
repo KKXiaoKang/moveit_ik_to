@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 import rospy
 import numpy as np
+import threading
 from dynamic_biped.msg import robotArmInfo
 import tf2_ros
-import geometry_msgs.msg
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped, PoseStamped
 from std_msgs.msg import Header
 from moveit_msgs.srv import GetPositionFK, GetPositionFKRequest
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 class WristPositionPublisher:
     def __init__(self):
@@ -32,6 +33,19 @@ class WristPositionPublisher:
         # 初始化末端执行器位姿列表
         self.l_hand_pose = []
         self.r_hand_pose = []
+
+        # 初始化 matplotlib
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.ax.set_xlabel('X')
+        self.ax.set_ylabel('Y')
+        self.ax.set_zlabel('Z')
+        self.l_hand_plot, = self.ax.plot([], [], [], label='Left Hand')
+        self.r_hand_plot, = self.ax.plot([], [], [], label='Right Hand')
+        self.ax.legend()
+
+        # 使用 FuncAnimation 定期更新绘图
+        self.ani = FuncAnimation(self.fig, self.update_plot, interval=100)
 
     def broadcast_transform(self, pose_stamped, fk_end_id):
         transform_stamped = TransformStamped()
@@ -75,31 +89,32 @@ class WristPositionPublisher:
         except rospy.ServiceException as e:
             rospy.logerr("Service call failed: %s", e)
 
-    def visualize_wrist_position(self):
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
+    def update_plot(self, frame):
+        if self.l_hand_pose and self.r_hand_pose:
+            l_hand_x = [pose.position.x for pose in self.l_hand_pose]
+            l_hand_y = [pose.position.y for pose in self.l_hand_pose]
+            l_hand_z = [pose.position.z for pose in self.l_hand_pose]
 
-        l_hand_x = [pose.position.x for pose in self.l_hand_pose]
-        l_hand_y = [pose.position.y for pose in self.l_hand_pose]
-        l_hand_z = [pose.position.z for pose in self.l_hand_pose]
+            r_hand_x = [pose.position.x for pose in self.r_hand_pose]
+            r_hand_y = [pose.position.y for pose in self.r_hand_pose]
+            r_hand_z = [pose.position.z for pose in self.r_hand_pose]
 
-        r_hand_x = [pose.position.x for pose in self.r_hand_pose]
-        r_hand_y = [pose.position.y for pose in self.r_hand_pose]
-        r_hand_z = [pose.position.z for pose in self.r_hand_pose]
+            self.l_hand_plot.set_data(l_hand_x, l_hand_y)
+            self.l_hand_plot.set_3d_properties(l_hand_z)
 
-        ax.plot(l_hand_x, l_hand_y, l_hand_z, label='Left Hand')
-        ax.plot(r_hand_x, r_hand_y, r_hand_z, label='Right Hand')
+            self.r_hand_plot.set_data(r_hand_x, r_hand_y)
+            self.r_hand_plot.set_3d_properties(r_hand_z)
 
-        ax.legend()
+            self.ax.relim()
+            self.ax.autoscale_view()
+
+    def show_plot(self):
         plt.show()
 
 def main():
     wp_publisher = WristPositionPublisher()
-    rospy.spin()
-    wp_publisher.visualize_wrist_position()
+    threading.Thread(target=rospy.spin).start()
+    wp_publisher.show_plot()
 
 if __name__ == '__main__':
     main()
