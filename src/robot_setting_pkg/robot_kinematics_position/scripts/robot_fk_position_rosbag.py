@@ -17,9 +17,9 @@ from matplotlib.animation import FuncAnimation
     1 -- 4代 半身机器人末端位姿正解及显示
 """ 
 GLOAL_FLAG = 0
-if GLOAL_FLAG = 0:
+if GLOAL_FLAG == 0:
     GLOAL_FLAG_VALUE = robotArmQVVD
-elif GLOAL_FLAG = 1:
+elif GLOAL_FLAG == 1:
     GLOAL_FLAG_VALUE = robotArmInfo
 
 class WristPositionPublisher:
