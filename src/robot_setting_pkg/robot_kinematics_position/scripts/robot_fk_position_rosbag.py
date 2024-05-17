@@ -3,6 +3,7 @@ import rospy
 import numpy as np
 import threading
 from dynamic_biped.msg import robotArmInfo
+from dynamic_biped.msg import robotArmQVVD
 import tf2_ros
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped, PoseStamped
@@ -10,6 +11,16 @@ from std_msgs.msg import Header
 from moveit_msgs.srv import GetPositionFK, GetPositionFKRequest
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+
+"""
+    0 -- 4代 整机机器人末端位姿正解及显示
+    1 -- 4代 半身机器人末端位姿正解及显示
+""" 
+GLOAL_FLAG = 0
+if GLOAL_FLAG = 0:
+    GLOAL_FLAG_VALUE = robotArmQVVD
+elif GLOAL_FLAG = 1:
+    GLOAL_FLAG_VALUE = robotArmInfo
 
 class WristPositionPublisher:
     def __init__(self):
@@ -21,7 +32,7 @@ class WristPositionPublisher:
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
         # 订阅关节状态主题
-        self.joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmInfo, self.joint_callback)
+        self.joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', GLOAL_FLAG_VALUE, self.joint_callback)
 
         # 发布末端执行器位姿信息
         self.l_hand_pub = rospy.Publisher('l_hand_position_end_fk', PoseStamped, queue_size=10)
