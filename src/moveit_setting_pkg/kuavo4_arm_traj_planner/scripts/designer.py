@@ -54,23 +54,37 @@ if __name__ == "__main__":
     # joints = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
     # traj = planner.goto_r_joint_config(joints)
     # dump_traj("traj/home/traj_r_home3.json", traj)
+    joints = angle_to_rad([40, 40, 0, 0, 0, -60, 0])
+    traj = planner.goto_l_joint_config(joints)
+    dump_traj("traj/catch_water/traj_l_catch_water1.json", traj)
+
+    joints = angle_to_rad([30, 70, 0, -50, 90, -30, 0])
+    traj = planner.goto_l_joint_config(joints)
+    dump_traj("traj/catch_water/traj_l_catch_water2.json", traj)
+
+    joints = angle_to_rad([-30, 10, 0, -30, 0, -30, 0])
+    traj = planner.goto_l_joint_config(joints)
+    dump_traj("traj/catch_water/traj_l_catch_water3.json", traj) 
     
+    joints = angle_to_rad([0, 0, 0, -20, 0, -70, 0])
+    traj = planner.goto_l_joint_config(joints)
+    dump_traj("traj/catch_water/traj_l_catch_water4.json", traj) 
     # 创建左手末端的轨迹点
     # 0.1 | 0.2 | 0.1
     # 0.2 | 0.3 | 0.1
     # 0.2 | 0.2 | 0.1
     # 0.2 | 0.2 | 0.3
-    point = Pose()
-    point.position.x = 0.2  # x坐标
-    point.position.y = 0.3  # y坐标
-    point.position.z = 0.1  # z坐标
-    point.orientation.x = 0.0  # 四元数的x分量
-    point.orientation.y = 0.0  # 四元数的y分量
-    point.orientation.z = 0.0  # 四元数的z分量
-    point.orientation.w = 1.0  # 四元数的w分量
+    # point = Pose()
+    # point.position.x = 0.2  # x坐标
+    # point.position.y = 0.3  # y坐标
+    # point.position.z = 0.1  # z坐标
+    # point.orientation.x = 0.0  # 四元数的x分量
+    # point.orientation.y = 0.0  # 四元数的y分量
+    # point.orientation.z = 0.0  # 四元数的z分量
+    # point.orientation.w = 1.0  # 四元数的w分量
 
-    traj = planner.goto_l_pose_config(point)
-    dump_traj("traj/point_to_show/traj_point_to_show2.json", traj)
+    # traj = planner.goto_l_pose_config(point)
+    # dump_traj("traj/point_to_show/traj_point_to_show2.json", traj)
 
     """查看完整设计轨迹示例 —— 挥手
 
