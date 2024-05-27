@@ -1,7 +1,0 @@
-<launch>
-  <!-- 启动 ARControlNode -->
-  <node pkg="robot_wrist_position" type="wrist_position_publisher.py" name="robot_wrist_position_node" output="screen" respawn="true" respawn_delay="5" />
-</launch>
-
-
-
