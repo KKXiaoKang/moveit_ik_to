@@ -1,7 +1,7 @@
 {
     "move_group_name"           :"l_arm_group",
     "gripper_name"              :"l_hand_eff",
-    "joint_name"                :["l_arm_pitch", "l_arm_roll", "l_arm_yaw", "l_forearm_pitch", "l_hand_yaw", "l_hand_pitch", "l_hand_roll"],
+    "joint_name"                :["l_arm_pitch", "l_arm_roll", "l_arm_yaw", "l_forearm_pitch", "l_hand_yaw", "l_hand_pitch", "l_hand_roll", "l_hand_end_virtual"],
 
     "planner_id"                :"RRTstar",
     "num_planning"              :2,

@@ -54,28 +54,26 @@ if __name__ == "__main__":
     # joints = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
     # traj = planner.goto_r_joint_config(joints)
     # dump_traj("traj/home/traj_r_home3.json", traj)
-
-    joints = angle_to_rad([40, 40, 0, 0, 0, -60, 0])
+    joints = angle_to_rad([119, 177, 175, 16, 0, 0, 0])
     traj = planner.goto_l_joint_config(joints)
     dump_traj("traj/catch_water/traj_l_catch_water1.json", traj)
 
-    joints = angle_to_rad([30, 70, 0, -50, 90, -30, 0])
-    traj = planner.goto_l_joint_config(joints)
-    dump_traj("traj/catch_water/traj_l_catch_water2.json", traj)
+    # joints = angle_to_rad([30, 70, 0, -50, 90, -30, 0])
+    # traj = planner.goto_l_joint_config(joints)
+    # dump_traj("traj/catch_water/traj_l_catch_water2.json", traj)
 
-    joints = angle_to_rad([-30, 10, 0, -30, 0, -30, 0])
-    traj = planner.goto_l_joint_config(joints)
-    dump_traj("traj/catch_water/traj_l_catch_water3.json", traj) 
+    # joints = angle_to_rad([-30, 10, 0, -30, 0, -30, 0])
+    # traj = planner.goto_l_joint_config(joints)
+    # dump_traj("traj/catch_water/traj_l_catch_water3.json", traj) 
     
-    joints = angle_to_rad([0, 0, 0, -20, 0, -70, 0])
-    traj = planner.goto_l_joint_config(joints)
-    dump_traj("traj/catch_water/traj_l_catch_water4.json", traj) 
-    
-    # # 创建左手末端的轨迹点
-    # # 0.1 | 0.2 | 0.1
-    # # 0.2 | 0.3 | 0.1
-    # # 0.2 | 0.2 | 0.1
-    # # 0.2 | 0.2 | 0.3
+    # joints = angle_to_rad([0, 0, 0, -20, 0, -70, 0])
+    # traj = planner.goto_l_joint_config(joints)
+    # dump_traj("traj/catch_water/traj_l_catch_water4.json", traj) 
+    # 创建左手末端的轨迹点
+    # 0.1 | 0.2 | 0.1
+    # 0.2 | 0.3 | 0.1
+    # 0.2 | 0.2 | 0.1
+    # 0.2 | 0.2 | 0.3
     # point = Pose()
     # point.position.x = 0.2  # x坐标
     # point.position.y = 0.3  # y坐标
