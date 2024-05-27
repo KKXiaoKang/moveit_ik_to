@@ -66,11 +66,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_arm_pitch" type="continuous">
+    <joint name="l_arm_pitch" type="revolute">
         <origin xyz="-0.0175475823124921 0.254700000000031 0.324500000000024" rpy="0 0 0" />
         <parent link="torso" />
         <child link="l_arm_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-3.14159" upper="0.523599" />
     </joint>
     <link name="l_arm_roll">
         <inertial>
@@ -94,11 +95,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_arm_roll" type="continuous">
+    <joint name="l_arm_roll" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="l_arm_pitch" />
         <child link="l_arm_roll" />
         <axis xyz="1 0 0" />
+        <limit velocity="1" effort="20" lower="-0.349066" upper="2.0944" /> 
     </joint>
     <link name="l_arm_yaw">
         <inertial>
@@ -122,11 +124,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_arm_yaw" type="continuous">
+    <joint name="l_arm_yaw" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="l_arm_roll" />
         <child link="l_arm_yaw" />
         <axis xyz="0 0 1" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
     </joint>
     <link name="l_forearm_pitch">
         <inertial>
@@ -150,11 +153,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_forearm_pitch" type="continuous">
+    <joint name="l_forearm_pitch" type="revolute">
         <origin xyz="0 0 -0.163599999999996" rpy="0 0 0" />
         <parent link="l_arm_yaw" />
         <child link="l_forearm_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="0" /> 
     </joint>
     <link name="l_hand_yaw">
         <inertial>
@@ -178,10 +182,11 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_hand_yaw" type="continuous">
+    <joint name="l_hand_yaw" type="revolute">
         <origin xyz="0 0 -0.132050000118071" rpy="0 0 0" />
         <parent link="l_forearm_pitch" />
         <child link="l_hand_yaw" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
         <axis xyz="0 0 1" />
     </joint>
     <link name="l_hand_pitch">
@@ -206,11 +211,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_hand_pitch" type="continuous">
+    <joint name="l_hand_pitch" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="l_hand_yaw" />
         <child link="l_hand_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" /> 
     </joint>
     <link name="l_hand_roll">
         <inertial>
@@ -234,11 +240,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="l_hand_roll" type="continuous">
+    <joint name="l_hand_roll" type="revolute">
         <origin xyz="0 0 -0.058999997180792" rpy="0 0 0" />
         <parent link="l_hand_pitch" />
         <child link="l_hand_roll" />
         <axis xyz="1 0 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
     </joint>
     <link name="l_hand_end_virtual">
         <visual>
@@ -558,11 +565,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_arm_pitch" type="continuous">
+    <joint name="r_arm_pitch" type="revolute">
         <origin xyz="-0.0175475823119764 -0.254700000000003 0.324500000000024" rpy="0 0 0" />
         <parent link="torso" />
         <child link="r_arm_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-3.14159" upper="0.523599" /> 
     </joint>
     <link name="r_arm_roll">
         <inertial>
@@ -586,11 +594,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_arm_roll" type="continuous">
+    <joint name="r_arm_roll" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="r_arm_pitch" />
         <child link="r_arm_roll" />
         <axis xyz="1 0 0" />
+        <limit velocity="1" effort="20" lower="-2.0944" upper="0.349066" />
     </joint>
     <link name="r_arm_yaw">
         <inertial>
@@ -614,11 +623,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_arm_yaw" type="continuous">
+    <joint name="r_arm_yaw" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="r_arm_roll" />
         <child link="r_arm_yaw" />
         <axis xyz="0 0 1" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" /> 
     </joint>
     <link name="r_forearm_pitch">
         <inertial>
@@ -642,11 +652,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_forearm_pitch" type="continuous">
+    <joint name="r_forearm_pitch" type="revolute">
         <origin xyz="0 0 -0.1636" rpy="0 0 0" />
         <parent link="r_arm_yaw" />
         <child link="r_forearm_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="0" /> 
     </joint>
     <link name="r_hand_yaw">
         <inertial>
@@ -670,10 +681,11 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_hand_yaw" type="continuous">
+    <joint name="r_hand_yaw" type="revolute">
         <origin xyz="0 0 -0.132050000118069" rpy="0 0 0" />
         <parent link="r_forearm_pitch" />
         <child link="r_hand_yaw" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
         <axis xyz="0 0 1" />
     </joint>
     <link name="r_hand_pitch">
@@ -698,11 +710,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_hand_pitch" type="continuous">
+    <joint name="r_hand_pitch" type="revolute">
         <origin xyz="0 0 0" rpy="0 0 0" />
         <parent link="r_hand_yaw" />
         <child link="r_hand_pitch" />
         <axis xyz="0 1 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
     </joint>
     <link name="r_hand_roll">
         <inertial>
@@ -726,11 +739,12 @@
             </geometry>
         </collision>
     </link>
-    <joint name="r_hand_roll" type="continuous">
+    <joint name="r_hand_roll" type="revolute">
         <origin xyz="0 0 -0.0590000000076598" rpy="0 0 0" />
         <parent link="r_hand_pitch" />
         <child link="r_hand_roll" />
         <axis xyz="1 0 0" />
+        <limit velocity="1" effort="20" lower="-1.5708" upper="1.5708" />
     </joint>
     <link name="r_hand_end_virtual">
         <visual>
