@@ -1,4 +1,12 @@
 build/
 devel/
 lib/
+traj/
 .catkin_workspace
+__pycache__/
+*.py[cod]
+
+# Ignore specific JSON files
+src/kuavo4_arm_traj_planner/scripts/traj/catch_water/*.json
+src/kuavo4_arm_traj_planner/scripts/traj/home/*.json
+src/kuavo4_arm_traj_planner/scripts/traj/*.json
