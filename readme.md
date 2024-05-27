@@ -1,14 +1,9 @@
-## kuavo机器人末端逆解仓库 / 末端轨迹插值规划
+## kuavo机器人moveit目标检测规划（工厂模式规划生产/规划消费模式）
 * moveit_setting_pkg : moveit配置文件夹
 ```bash
-biped_s4:               机器人模型功能包 
+biped_s4:                机器人模型功能包 
 kuavo4_arm_traj_planner: moveit pythonAPI 调取服务发送轨迹功能包
-kuavos4_moveit_config: moveit 配置功能包
+kuavo40_moveit_config:   moveit 配置功能包（新带机器人虚拟关节手臂）
+traj_planner：           轨迹规划工厂模式功能包
 ``` 
----
-* robot_setting_pkg : 机器人参数配置文件夹
-```bash
-kuavo: 机器人控制功能包 
-robot_kinematics_position: 机器人运动学功能包
-```
 ---
