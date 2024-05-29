@@ -23,6 +23,16 @@ from utils import angle_to_rad
 
 Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 
+rospy.init_node("test_node", anonymous=True)
+moveit_commander.roscpp_initialize(sys.argv)
+
+planner = Planner()
+logger = Logger()
+publisher = Publisher()
+
+# 初始化标志变量
+IF_NEW_FLAG = False
+
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
     roll, pitch, yaw = tf.transformations.euler_from_quaternion(orientation_quaternion)
@@ -54,11 +64,30 @@ def calculate_inverse_kinematics(target_pose_stamped):
         rospy.logerr("Service call failed: %s", str(e))
         return None
 
+# 显示末端逆解的结果
+def display_inverse_kinematics_result(target_pose_stamped):
+    # 逆解出关节角度
+    joint_angles = calculate_inverse_kinematics(target_pose_stamped)
+    if joint_angles is None:
+        rospy.logerr("Failed to calculate inverse kinematics")
+        return
+
+    left_arm_angles_rad   = joint_angles.position[2:9]  # 左手的关节角度
+    right_arm_angles_rad  = joint_angles.position[19:26]  # 右手的关节角度
+
+    left_arm_angles_deg = [math.degrees(angle) for angle in left_arm_angles_rad]
+    right_arm_angles_deg = [math.degrees(angle) for angle in right_arm_angles_rad]
+
+    print("left_arm_angles_deg : ", left_arm_angles_deg)
+    print("right_arm_angles_deg : ", right_arm_angles_deg)
+
 def detection_callback(msg):
+    global IF_NEW_FLAG
+
     if not msg.detections:
         rospy.logwarn("No detections in message.")
         return
-
+    
     # 提取目标检测信息（假设只处理第一个检测结果）
     detection = msg.detections[0]
     x = detection.results[0].pose.pose.position.x
@@ -95,40 +124,22 @@ def detection_callback(msg):
     target_pose_stamped.pose.orientation.w = 0.6126921082068228
     
     # print("target_pose_stamped : ", target_pose_stamped)
-    
-    # 逆解出关节角度
-    # joint_angles = calculate_inverse_kinematics(target_pose_stamped)
-    # if joint_angles is None:
-    #     rospy.logerr("Failed to calculate inverse kinematics")
-    #     return
-
-    # left_arm_angles_rad   = joint_angles.position[2:9]  # 左手的关节角度
-    # right_arm_angles_rad  = joint_angles.position[19:26]  # 右手的关节角度
-
-    # left_arm_angles_deg = [math.degrees(angle) for angle in left_arm_angles_rad]
-    # right_arm_angles_deg = [math.degrees(angle) for angle in right_arm_angles_rad]
-
-    # print("left_arm_angles_deg : ", left_arm_angles_deg)
-    # print("right_arm_angles_deg : ", right_arm_angles_deg)
+    # display_inverse_kinematics_result(target_pose_stamped)
 
     # 设置并且开启规划
     planner.set_start_state(Point_zero)
     traj = planner.plan_to_target_pose(target_pose_stamped)
     if traj:
+        if not IF_NEW_FLAG:
+            publisher.start_auto_publish()
+            logger.make_traj_dir()
+            IF_NEW_FLAG = True
+            
         logger.dump_traj(traj, file_name="test1_moveit_point")
     else:
         rospy.logerr("Failed to plan trajectory")
 
 if __name__ == "__main__":
-    rospy.init_node("test_node", anonymous=True)
-    moveit_commander.roscpp_initialize(sys.argv)
-
-    planner = Planner()
-    logger = Logger()
-    publisher = Publisher()
-
-    publisher.start_auto_publish()
-    logger.make_traj_dir()
 
     print("=====================================================")
 
@@ -136,7 +147,7 @@ if __name__ == "__main__":
     rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
 
     # 设置频率为 10 Hz
-    rate = rospy.Rate(5)
+    rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
         # 在循环中处理回调
