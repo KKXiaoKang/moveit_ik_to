@@ -10,3 +10,6 @@ __pycache__/
 src/kuavo4_arm_traj_planner/scripts/traj/catch_water/*.json
 src/kuavo4_arm_traj_planner/scripts/traj/home/*.json
 src/kuavo4_arm_traj_planner/scripts/traj/*.json
+
+# Ignore all JSON files in src/traj_planner/traj and its subdirectories
+src/traj_planner/traj/**/*.json
