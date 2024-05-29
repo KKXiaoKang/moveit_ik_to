@@ -75,10 +75,17 @@ if __name__ == "__main__":
     target_pose_stamped.pose.position.x = 0.12595975554344743
     target_pose_stamped.pose.position.y = 0.2546565360634217
     target_pose_stamped.pose.position.z = 0.03443182480649596
+
     target_pose_stamped.pose.orientation.x = -0.07733529679630219
     target_pose_stamped.pose.orientation.y = -0.4109196668427433
     target_pose_stamped.pose.orientation.z = -0.03449601648776949
     target_pose_stamped.pose.orientation.w = 0.9077303036242385
+
+    # target_pose_stamped.pose.orientation.x = 0.0
+    # target_pose_stamped.pose.orientation.y = -0.707
+    # target_pose_stamped.pose.orientation.z = 0.0
+    # target_pose_stamped.pose.orientation.w = 0.707
+    
     print(" target_pose_stamped : ", target_pose_stamped)
 
     # 逆解出关节角度
