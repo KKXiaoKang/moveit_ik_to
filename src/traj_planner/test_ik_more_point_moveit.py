@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 """
-    当目标检测的结果
+    目标检测的结果
+    当作pose
+    然后逆解为joint
+    然后用joint调取规划
 """
 import sys
 import rospy
@@ -18,6 +21,8 @@ from logger import Logger
 from publisher import Publisher
 
 from utils import angle_to_rad
+
+Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
@@ -67,10 +72,11 @@ def detection_callback(msg):
     target_pose_stamped.pose.position.y = y
     target_pose_stamped.pose.position.z = z
 
+    # 修改成斜着抓
     target_pose_stamped.pose.orientation.x = 0.0
-    target_pose_stamped.pose.orientation.y = 0.0
+    target_pose_stamped.pose.orientation.y = -0.707
     target_pose_stamped.pose.orientation.z = 0.0
-    target_pose_stamped.pose.orientation.w = 1.0
+    target_pose_stamped.pose.orientation.w = 0.707
     # print("target_pose_stamped : ", target_pose_stamped)
     
     # 逆解出关节角度
@@ -79,22 +85,22 @@ def detection_callback(msg):
         rospy.logerr("Failed to calculate inverse kinematics")
         return
 
-    # left_arm_angles_rad   = joint_angles.position[2:9]  # 左手的关节角度
-    # right_arm_angles_rad  = joint_angles.position[19:26]  # 右手的关节角度
+    left_arm_angles_rad   = joint_angles.position[2:9]  # 左手的关节角度
+    right_arm_angles_rad  = joint_angles.position[19:26]  # 右手的关节角度
 
-    # left_arm_angles_deg = [math.degrees(angle) for angle in left_arm_angles_rad]
-    # right_arm_angles_deg = [math.degrees(angle) for angle in right_arm_angles_rad]
+    left_arm_angles_deg = [math.degrees(angle) for angle in left_arm_angles_rad]
+    right_arm_angles_deg = [math.degrees(angle) for angle in right_arm_angles_rad]
 
-    # print("left_arm_angles_deg : ", left_arm_angles_deg)
-    # print("right_arm_angles_deg : ", right_arm_angles_deg)
+    print("left_arm_angles_deg : ", left_arm_angles_deg)
+    print("right_arm_angles_deg : ", right_arm_angles_deg)
 
-    # # 设置并且开启规划
-    # planner.set_start_state(Point_zero)
-    # traj = planner.plan_to_target_joints(left_arm_angles_rad)
-    # if traj:
-    #     logger.dump_traj(traj, file_name="test1_moveit_point")
-    # else:
-    #     rospy.logerr("Failed to plan trajectory")
+    # 设置并且开启规划
+    planner.set_start_state(Point_zero)
+    traj = planner.plan_to_target_joints(left_arm_angles_rad)
+    if traj:
+        logger.dump_traj(traj, file_name="test1_moveit_point")
+    else:
+        rospy.logerr("Failed to plan trajectory")
 
 if __name__ == "__main__":
     rospy.init_node("test_node", anonymous=True)
