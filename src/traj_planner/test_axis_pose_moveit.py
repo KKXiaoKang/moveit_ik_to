@@ -127,7 +127,7 @@ if __name__ == "__main__":
     logger = Logger()
     publisher = Publisher()
 
-    # publisher.start_auto_publish()
+    publisher.start_auto_publish()
     logger.make_traj_dir()
 
     print("=====================================================")
@@ -143,4 +143,4 @@ if __name__ == "__main__":
         rate.sleep()
 
     # 结束自动发布
-    # publisher.stop_auto_publish()
+    publisher.stop_auto_publish()
