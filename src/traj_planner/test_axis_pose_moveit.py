@@ -72,10 +72,28 @@ def detection_callback(msg):
     target_pose_stamped.pose.position.z = z
 
     # 修改成斜着抓
-    target_pose_stamped.pose.orientation.x = 0.0
-    target_pose_stamped.pose.orientation.y = -0.707
-    target_pose_stamped.pose.orientation.z = 0.0
-    target_pose_stamped.pose.orientation.w = 0.707
+    """
+    orientation: 
+    x: -0.0005758165802488772
+    y: -0.790321413563568
+    z: 0.00033502123618358546
+    w: 0.6126921082068228
+
+    # target_pose_stamped.pose.orientation.x = -0.07733529679630219
+    # target_pose_stamped.pose.orientation.y = -0.4109196668427433
+    # target_pose_stamped.pose.orientation.z = -0.03449601648776949
+    # target_pose_stamped.pose.orientation.w = 0.9077303036242385
+
+    # target_pose_stamped.pose.orientation.x = 0.0
+    # target_pose_stamped.pose.orientation.y = 0.0
+    # target_pose_stamped.pose.orientation.z = 0.0
+    # target_pose_stamped.pose.orientation.w = 1.0
+    """
+    target_pose_stamped.pose.orientation.x = -0.0005758165802488772
+    target_pose_stamped.pose.orientation.y = -0.790321413563568
+    target_pose_stamped.pose.orientation.z = 0.00033502123618358546
+    target_pose_stamped.pose.orientation.w = 0.6126921082068228
+    
     # print("target_pose_stamped : ", target_pose_stamped)
     
     # 逆解出关节角度
