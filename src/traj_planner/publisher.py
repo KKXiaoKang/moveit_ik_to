@@ -46,7 +46,7 @@ class Publisher(Base):
     def publish_traj_joints(
         self,
         traj: moveit_msgs.msg.RobotTrajectory,
-        rad: bool = True
+        rad: bool = False
     ) -> None:
         """发布关节轨迹
         
@@ -66,11 +66,15 @@ class Publisher(Base):
                 exit(0)
             
             joint_state.header.stamp = rospy.Time.now()
+            
+            # 将 position 和 velocity 扩展到 14 维
             if rad:
-                joint_state.position = point.positions
+                joint_state.position = list(point.positions) + [0.0] * (14 - len(point.positions))
             else:
-                joint_state.position = rad_to_angle(point.positions)
-            joint_state.velocity = point.velocities
+                joint_state.position = rad_to_angle(point.positions) + [0.0] * (14 - len(point.positions))
+            
+            joint_state.velocity = list(point.velocities) + [0.0] * (14 - len(point.velocities))
+            
             self._traj_joints_publisher.publish(joint_state)
             
             rate.sleep()
@@ -115,5 +119,3 @@ class Publisher(Base):
             except GetEmptyTraj:
                 continue
             self.publish_traj_joints(traj)
-
-
