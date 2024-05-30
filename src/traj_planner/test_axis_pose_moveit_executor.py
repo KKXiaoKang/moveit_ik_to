@@ -105,10 +105,10 @@ def detection_callback(msg):
     # 修改成斜着抓
     """
     orientation: 
-    x: -0.0005758165802488772
-    y: -0.790321413563568
-    z: 0.00033502123618358546
-    w: 0.6126921082068228
+        x: -0.0005758165802488772
+        y: -0.790321413563568
+        z: 0.00033502123618358546
+        w: 0.6126921082068228
 
     # target_pose_stamped.pose.orientation.x = -0.07733529679630219
     # target_pose_stamped.pose.orientation.y = -0.4109196668427433
@@ -119,12 +119,23 @@ def detection_callback(msg):
     # target_pose_stamped.pose.orientation.y = 0.0
     # target_pose_stamped.pose.orientation.z = 0.0
     # target_pose_stamped.pose.orientation.w = 1.0
+
+    orientation: 
+        x: -0.0005388071066334781
+        y: -0.7904212674887817
+        z: 0.00032694187655405566
+        w: 0.6125633213777487
     """
     target_pose_stamped.pose.orientation.x = -0.0005758165802488772
     target_pose_stamped.pose.orientation.y = -0.790321413563568
     target_pose_stamped.pose.orientation.z = 0.00033502123618358546
     target_pose_stamped.pose.orientation.w = 0.6126921082068228
-    
+
+    # target_pose_stamped.pose.orientation.x = -0.0005388071066334781
+    # target_pose_stamped.pose.orientation.y = -0.7904212674887817
+    # target_pose_stamped.pose.orientation.z = 0.00032694187655405566
+    # target_pose_stamped.pose.orientation.w = 0.6125633213777487
+
     # print("target_pose_stamped : ", target_pose_stamped)
     # display_inverse_kinematics_result(target_pose_stamped)
 
@@ -181,7 +192,7 @@ def detection_callback(msg):
         rospy.logerr("Failed to plan trajectory")
 
     # 执行 不等待rviz执行结果
-    executor.execute_traj(traj,wait=False)
+    executor.execute_traj(traj,wait=True)
 
 if __name__ == "__main__":
 

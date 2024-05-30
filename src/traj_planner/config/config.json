@@ -11,9 +11,9 @@
     "max_vel_scaling_factor"    :1,
     "max_acc_scaling_factor"    :1,
 
-    "joint_tolerance"           :0.1,
-    "orientation_tolerance"     :0.1,
-    "position_tolerance"        :0.1,
+    "joint_tolerance"           :0.2,
+    "orientation_tolerance"     :0.2,
+    "position_tolerance"        :0.2,
     
     "publish_rate"              :10,
     "gripper_motion_time"       :1
