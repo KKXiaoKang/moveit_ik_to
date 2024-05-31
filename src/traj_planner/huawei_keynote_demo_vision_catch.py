@@ -21,6 +21,8 @@ from publisher import Publisher
 from executor import Executor
 import time
 from utils import angle_to_rad
+from dynamic_biped.msg import robotArmQVVD
+from std_msgs.msg import Header
 
 Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 Point_1 = angle_to_rad([ 20, 50, 0,   0, 10,   0, 0])
@@ -37,6 +39,8 @@ logger = Logger()
 publisher = Publisher()
 executor = Executor()
 
+joint_state = JointState()
+
 # 初始化标志变量
 IF_NEW_FLAG = True
 # 是否为第一次规划
@@ -47,8 +51,8 @@ Failed_TRAJ_FLAG = False
 Failed_count = 1          
 # 初始化计数器
 trajectory_counter = 1
-# 最大轨迹次数 2 规划一次 / 3 规划2次
-MAX_TRAJECTORY_COUNT = 3
+# 最大轨迹次数 2 规划一次 / 3 规划2次 / 4 规划3次
+MAX_TRAJECTORY_COUNT = 4
 
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
@@ -101,6 +105,7 @@ def display_inverse_kinematics_result(target_pose_stamped):
 def detection_callback(msg):
     global IF_NEW_FLAG, trajectory_counter
     global FIRST_TRAJECTORY_FLAG, Failed_count
+    global joint_state
 
     if not msg.detections:
         rospy.logwarn("No detections in message.")
@@ -124,18 +129,8 @@ def detection_callback(msg):
     target_pose_stamped.pose.orientation.z = 0.00032694187655405566
     target_pose_stamped.pose.orientation.w = 0.6125633213777487
 
-    # # 判断是否为第一次抓取
-    # if FIRST_TRAJECTORY_FLAG:
-    #     now_joint_state = angle_to_rad([-35,  0, 0, -20,  0, -50, 0])
-    #     FIRST_TRAJECTORY_FLAG = False
-    #     time.sleep(5)
-    # else:
-    #     now_joint_state = planner.get_current_joints_values()
-    #     print("=====================================================")
-    #     print(" now_joint_state : ", now_joint_state)
-    #     print("=====================================================")
-
-    now_joint_state = planner.get_current_joints_values()
+    # 设置规划的初始点
+    now_joint_state = joint_state.position
     print("=====================================================")
     print(" now_joint_state : ", now_joint_state)
     print("=====================================================")
@@ -155,6 +150,9 @@ def detection_callback(msg):
         Failed_count = 0         # 失败计数器清0
         # 执行 等待rviz执行结果
         executor.execute_traj(traj, wait=True)
+
+        # 加入等待
+        time.sleep(3)
     else:
         rospy.logerr("Failed to plan trajectory")
         Failed_count+=1
@@ -167,6 +165,14 @@ def detection_callback(msg):
         time.sleep(5)
         rospy.loginfo("Planned 3 successful trajectories, shutting down...")
         rospy.signal_shutdown("Trajectory count limit reached")
+
+def joint_callback(data):
+    # 提取左手关节角度
+    global joint_state
+    joint_state.header = Header()
+    joint_state.header.stamp = rospy.Time.now()
+    joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
+    joint_state.position = data.q[:7]
 
 if __name__ == "__main__":
 
@@ -209,8 +215,11 @@ if __name__ == "__main__":
     # 等待固定轨迹发布完毕
     time.sleep(5)
 
+    # 订阅
+    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)
+
     # 订阅 /object_yolo_tf2_torso_result 话题
-    rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
+    yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
 
     # 设置频率为 10 Hz
     rate = rospy.Rate(10)
