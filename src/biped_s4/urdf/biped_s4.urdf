@@ -71,7 +71,7 @@
         <parent link="torso" />
         <child link="l_arm_pitch" />
         <axis xyz="0 1 0" />
-        <limit velocity="1" effort="20" lower="-3.14159" upper="0.523599" />
+        <limit velocity="1" effort="20" lower="-3.14159"  upper="0.523599" /> 
     </joint>
     <link name="l_arm_roll">
         <inertial>
