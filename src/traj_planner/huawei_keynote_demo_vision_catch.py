@@ -52,7 +52,7 @@ Failed_count = 1
 # 初始化计数器
 trajectory_counter = 1
 # 最大轨迹次数 2 规划一次 / 3 规划2次 / 4 规划3次
-MAX_TRAJECTORY_COUNT = 4
+MAX_TRAJECTORY_COUNT = 3
 
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
