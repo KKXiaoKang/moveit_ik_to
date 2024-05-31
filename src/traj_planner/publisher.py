@@ -7,7 +7,7 @@ import sensor_msgs.msg
 import moveit_msgs.msg
 
 from base import Base
-from exception import PublishTnreadError, GetEmptyTraj
+# from exception import PublishTnreadError, GetEmptyTraj
 from utils import rad_to_angle
 
 
@@ -88,7 +88,7 @@ class Publisher(Base):
         
         try:
             self._publish_thread = threading.Thread(target=self._traj_consumer)
-        except PublishTnreadError as e:
+        except Exception as e:
             rospy.logwarn(e)
             return
         
@@ -116,6 +116,6 @@ class Publisher(Base):
                 break
             try:
                 traj = self._traj_queue.get(timeout=1)
-            except GetEmptyTraj:
+            except Exception as e:
                 continue
             self.publish_traj_joints(traj)
