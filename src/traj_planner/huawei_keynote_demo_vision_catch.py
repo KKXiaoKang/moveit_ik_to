@@ -39,14 +39,16 @@ executor = Executor()
 
 # 初始化标志变量
 IF_NEW_FLAG = True
-
 # 是否为第一次规划
 FIRST_TRAJECTORY_FLAG = True
-
+# 轨迹失败标志
+Failed_TRAJ_FLAG = False
+# 失败计数器
+Failed_count = 1          
 # 初始化计数器
 trajectory_counter = 1
-# 最大轨迹次数
-MAX_TRAJECTORY_COUNT = 4
+# 最大轨迹次数 2 规划一次 / 3 规划2次
+MAX_TRAJECTORY_COUNT = 3
 
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
@@ -98,6 +100,7 @@ def display_inverse_kinematics_result(target_pose_stamped):
 
 def detection_callback(msg):
     global IF_NEW_FLAG, trajectory_counter
+    global FIRST_TRAJECTORY_FLAG, Failed_count
 
     if not msg.detections:
         rospy.logwarn("No detections in message.")
@@ -121,6 +124,17 @@ def detection_callback(msg):
     target_pose_stamped.pose.orientation.z = 0.00032694187655405566
     target_pose_stamped.pose.orientation.w = 0.6125633213777487
 
+    # # 判断是否为第一次抓取
+    # if FIRST_TRAJECTORY_FLAG:
+    #     now_joint_state = angle_to_rad([-35,  0, 0, -20,  0, -50, 0])
+    #     FIRST_TRAJECTORY_FLAG = False
+    #     time.sleep(5)
+    # else:
+    #     now_joint_state = planner.get_current_joints_values()
+    #     print("=====================================================")
+    #     print(" now_joint_state : ", now_joint_state)
+    #     print("=====================================================")
+
     now_joint_state = planner.get_current_joints_values()
     print("=====================================================")
     print(" now_joint_state : ", now_joint_state)
@@ -138,19 +152,21 @@ def detection_callback(msg):
         print(" object traj success ! --- now is {0} traj ---".format(trajectory_counter))
         logger.dump_traj(traj, file_name="test1_moveit_point")
         trajectory_counter += 1  # 增加计数器
+        Failed_count = 0         # 失败计数器清0
+        # 执行 等待rviz执行结果
+        executor.execute_traj(traj, wait=True)
     else:
         rospy.logerr("Failed to plan trajectory")
-        publisher.stop_auto_publish()
-        IF_NEW_FLAG = False
+        Failed_count+=1
+        if Failed_count < 2:
+            publisher.stop_auto_publish()
+            IF_NEW_FLAG = False
 
     # 计数器
     if trajectory_counter >= MAX_TRAJECTORY_COUNT:
         time.sleep(5)
         rospy.loginfo("Planned 3 successful trajectories, shutting down...")
         rospy.signal_shutdown("Trajectory count limit reached")
-
-    # 执行 等待rviz执行结果
-    executor.execute_traj(traj, wait=True)
 
 if __name__ == "__main__":
 
@@ -185,8 +201,8 @@ if __name__ == "__main__":
     print("=====================================================")
     planner.set_start_state(Point_4)
     traj = planner.plan_to_target_joints(Point_5)
-    logger.dump_traj(traj, file_name="test5")
     executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="test5")
 
     print("=====================================================")
 
