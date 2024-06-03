@@ -259,7 +259,7 @@
         </visual>
     </link>
     <joint name="l_hand_end_virtual" type="fixed">
-        <origin xyz="0 0 -0.0945" rpy="0 0 0" />
+        <origin xyz="0 0 -0.1545" rpy="0 0 0" />
         <parent link="l_hand_roll" />
         <child link="l_hand_end_virtual" />
     </joint>
@@ -758,7 +758,7 @@
         </visual>
     </link>
     <joint name="r_hand_end_virtual" type="fixed">
-        <origin xyz="0 0 -0.0945" rpy="0 0 0" />
+        <origin xyz="0 0 -0.1545" rpy="0 0 0" />
         <parent link="r_hand_roll" />
         <child link="r_hand_end_virtual" />
     </joint>
