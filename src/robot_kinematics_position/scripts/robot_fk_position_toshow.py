@@ -45,14 +45,15 @@ class WristPositionPublisher:
         joint_state = JointState()
         joint_state.header = Header()
         joint_state.header.stamp = rospy.Time.now()
-        joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
+        joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll', 
+                            'r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
         joint_state.position = data.q
     
         # 通过运动学正解服务计算末端执行器位姿
         try:
             fk_request = GetPositionFKRequest()
             fk_request.robot_state.joint_state = joint_state
-            fk_request.fk_link_names = ['l_hand_roll', 'r_hand_roll']
+            fk_request.fk_link_names = ['l_hand_end_virtual', 'r_hand_end_virtual']
             fk_response = self.fk_client(fk_request)
     
             # 发布左手和右手的位姿
