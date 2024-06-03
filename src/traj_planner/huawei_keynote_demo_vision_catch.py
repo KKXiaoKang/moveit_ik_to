@@ -22,7 +22,8 @@ from executor import Executor
 import time
 from utils import angle_to_rad
 from dynamic_biped.msg import robotArmQVVD
-from std_msgs.msg import Header
+from std_msgs.msg  import Header
+from kuavoRobotSDK import kuavo
 
 Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 Point_1 = angle_to_rad([ 20, 50, 0,   0, 10,   0, 0])
@@ -53,6 +54,27 @@ Failed_count = 1
 trajectory_counter = 1
 # 最大轨迹次数 2 规划一次 / 3 规划2次 / 4 规划3次
 MAX_TRAJECTORY_COUNT = 3
+# 初始化机器人
+robot_instance = kuavo("4_1_kuavo")
+# Y轴偏移量
+Y_TO_MOVEIT_OFFSET = -0.01
+
+# 定义灵巧手抓取函数
+def end_control_to_chosse(kuavo_robot, chosse_flag):
+    zero_pose = [0, 0, 0, 0, 0, 0]
+
+    catch_left_pose = [65, 65, 90, 80, 80, 90]
+    catch_right_pose = [65, 65, 90, 80, 80, 90]
+
+    open_left_pose = [100, 0, 0, 0, 0, 0]
+    open_right_pose = [100, 0, 0, 0, 0, 0]
+
+    if chosse_flag == 0:
+        kuavo_robot.set_end_control(zero_pose, zero_pose)
+    elif chosse_flag == 1:
+        kuavo_robot.set_end_control(catch_left_pose, catch_right_pose)
+    elif chosse_flag == 2:
+        kuavo_robot.set_end_control(open_left_pose, open_right_pose)
 
 # 获取目标姿态的四元数
 def robot_euler_from_quaternion(orientation_quaternion):
@@ -106,6 +128,8 @@ def detection_callback(msg):
     global IF_NEW_FLAG, trajectory_counter
     global FIRST_TRAJECTORY_FLAG, Failed_count
     global joint_state
+    global robot_instance
+    global Y_TO_MOVEIT_OFFSET
 
     if not msg.detections:
         rospy.logwarn("No detections in message.")
@@ -120,7 +144,8 @@ def detection_callback(msg):
     target_pose_stamped = PoseStamped()
     target_pose_stamped.header.frame_id = "torso"
     target_pose_stamped.pose.position.x = x
-    target_pose_stamped.pose.position.y = y
+    target_pose_stamped.pose.position.y = (y + Y_TO_MOVEIT_OFFSET)
+    #target_pose_stamped.pose.position.y = y
     target_pose_stamped.pose.position.z = z
 
     # 修改成斜着抓
@@ -163,6 +188,16 @@ def detection_callback(msg):
     # 计数器
     if trajectory_counter >= MAX_TRAJECTORY_COUNT:
         time.sleep(5)
+        # ------------------- 抓取服务 -------------------
+        # 打开虎口
+        end_control_to_chosse(robot_instance, 2)
+        time.sleep(2)
+
+        # 合并爪子
+        end_control_to_chosse(robot_instance, 1)
+        time.sleep(2)
+
+        # ------------------- 抓取服务 -------------------
         rospy.loginfo("Planned 3 successful trajectories, shutting down...")
         rospy.signal_shutdown("Trajectory count limit reached")
 
@@ -176,6 +211,8 @@ def joint_callback(data):
 
 if __name__ == "__main__":
 
+    end_control_to_chosse(robot_instance, 0)
+    
     logger.make_traj_dir()
     publisher.start_auto_publish()
 
