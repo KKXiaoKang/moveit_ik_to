@@ -213,7 +213,7 @@ if __name__ == "__main__":
     print("=====================================================")
 
     # 等待固定轨迹发布完毕
-    time.sleep(5)
+    time.sleep(6.5)
 
     # 订阅
     joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)
