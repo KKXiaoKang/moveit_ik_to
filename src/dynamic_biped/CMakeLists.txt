@@ -71,6 +71,7 @@ add_service_files(
   changeArmCtrlMode.srv
   changeAMBACCtrlMode.srv
   srvChangeJoller.srv
+  controlEndHand.srv
 )
 
 ## Generate actions in the 'action' folder
