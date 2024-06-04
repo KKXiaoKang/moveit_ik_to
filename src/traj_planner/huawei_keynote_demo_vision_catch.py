@@ -5,6 +5,24 @@
     当作pose
     直接pose调取规划
 """
+"""
+^Cheader: 
+  seq: 28848
+  stamp: 
+    secs: 1717481711
+    nsecs: 299343933
+  frame_id: "torso"
+pose: 
+  position: 
+    x: 0.4286000706092169
+    y: 0.19595687180148758
+    z: 0.17765896504629344
+  orientation: 
+    x: -0.0721942044186147
+    y: -0.7413773167519854
+    z: 0.01190906338497144
+    w: 0.6670875844019901
+"""
 import sys
 import rospy
 import moveit_commander
@@ -29,8 +47,8 @@ Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 Point_1 = angle_to_rad([ 20, 50, 0,   0, 10,   0, 0])
 Point_2 = angle_to_rad([ 30, 90, 0, -50, 90, -30, 0])
 Point_3 = angle_to_rad([  0, 90, 0, -50, 90, -30, 0])
-Point_4 = angle_to_rad([-35, 10, 0, -30,  0, -30, 0])
-Point_5 = angle_to_rad([-35,  0, 0, -20,  0, -50, 0])
+Point_4 = angle_to_rad([-50, 10, 0, -30,  0, -30, 0])
+Point_5 = angle_to_rad([-50,  0, 0, -20,  0, -50, 0])
 
 rospy.init_node("test_node", anonymous=True)
 moveit_commander.roscpp_initialize(sys.argv)
@@ -57,14 +75,15 @@ MAX_TRAJECTORY_COUNT = 3
 # 初始化机器人
 robot_instance = kuavo("4_1_kuavo")
 # Y轴偏移量
-Y_TO_MOVEIT_OFFSET = -0.01
+# Y_TO_MOVEIT_OFFSET = -0.01
+Y_TO_MOVEIT_OFFSET = 0
 
 # 定义灵巧手抓取函数
 def end_control_to_chosse(kuavo_robot, chosse_flag):
     zero_pose = [0, 0, 0, 0, 0, 0]
 
-    catch_left_pose = [65, 65, 90, 80, 80, 90]
-    catch_right_pose = [65, 65, 90, 80, 80, 90]
+    catch_left_pose = [65, 65, 90, 90, 90, 90]
+    catch_right_pose = [65, 65, 90, 90, 90, 90]
 
     open_left_pose = [100, 0, 0, 0, 0, 0]
     open_right_pose = [100, 0, 0, 0, 0, 0]
@@ -130,6 +149,7 @@ def detection_callback(msg):
     global joint_state
     global robot_instance
     global Y_TO_MOVEIT_OFFSET
+    global planner, logger, publisher, executor 
 
     if not msg.detections:
         rospy.logwarn("No detections in message.")
@@ -148,11 +168,24 @@ def detection_callback(msg):
     #target_pose_stamped.pose.position.y = y
     target_pose_stamped.pose.position.z = z
 
-    # 修改成斜着抓
+    # 修改成斜着抓(老方法)
+    # [ x: -179.9671049, y: -75.5501686, z: -179.8963931 ]
     target_pose_stamped.pose.orientation.x = -0.0005388071066334781
     target_pose_stamped.pose.orientation.y = -0.7904212674887817
     target_pose_stamped.pose.orientation.z = 0.00032694187655405566
     target_pose_stamped.pose.orientation.w = 0.6125633213777487
+    
+    # """
+    #   orientation: 
+    # x: 0.03614969107398411
+    # y: -0.8039024572034098
+    # z: -0.0006953330262331505
+    # w: 0.5936611454774162
+    # """
+    # target_pose_stamped.pose.orientation.x = 0.03614969107398411
+    # target_pose_stamped.pose.orientation.y = -0.8039024572034098
+    # target_pose_stamped.pose.orientation.z = -0.0006953330262331505
+    # target_pose_stamped.pose.orientation.w = 0.5936611454774162
 
     # 设置规划的初始点
     now_joint_state = joint_state.position
@@ -198,16 +231,54 @@ def detection_callback(msg):
         time.sleep(2)
 
         # ------------------- 抓取服务 -------------------
+
+        # 回去
+        # 抓完回去
+        print("=====================================================")
+        planner.set_start_state(Point_5)
+        traj = planner.plan_to_target_joints(Point_4)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="test6")
+
+        print("=====================================================")
+        planner.set_start_state(Point_4)
+        traj = planner.plan_to_target_joints(Point_3)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="test7")
+
+        print("=====================================================")
+        planner.set_start_state(Point_3)
+        traj = planner.plan_to_target_joints(Point_2)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="test8")
+
+        print("=====================================================")
+        planner.set_start_state(Point_2)
+        traj = planner.plan_to_target_joints(Point_1)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="test9")
+
+        print("=====================================================")
+        planner.set_start_state(Point_1)
+        traj = planner.plan_to_target_joints(Point_zero)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="test10")
+        # 等待执行完毕 
+        time.sleep(6.5)
+
+        # ------------------- 结束 -------------------------
         rospy.loginfo("Planned 3 successful trajectories, shutting down...")
         rospy.signal_shutdown("Trajectory count limit reached")
 
-def joint_callback(data):
-    # 提取左手关节角度
-    global joint_state
-    joint_state.header = Header()
-    joint_state.header.stamp = rospy.Time.now()
-    joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
-    joint_state.position = data.q[:7]
+
+
+def     joint_callback(data):
+        # 提取左手关节角度
+        global joint_state
+        joint_state.header = Header()
+        joint_state.header.stamp = rospy.Time.now()
+        joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
+        joint_state.position = data.q[:7]
 
 if __name__ == "__main__":
 
@@ -250,7 +321,7 @@ if __name__ == "__main__":
     print("=====================================================")
 
     # 等待固定轨迹发布完毕
-    time.sleep(6.5)
+    time.sleep(7)
 
     # 订阅
     joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)

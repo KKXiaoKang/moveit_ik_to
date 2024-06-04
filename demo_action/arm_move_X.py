@@ -17,6 +17,13 @@
 import rospy
 import time
 from kuavoRobotSDK import kuavo
+from utils import rad_to_angle
+
+angle_joint_end0 = rad_to_angle([-0.9636, -0.2836, 0.2506, -0.2406, 0.0704, -0.0733, 0.1217, 0, 0, 0, 0, 0, 0, 0])
+angle_joint_end1 = rad_to_angle([-0.9623, -0.2593, -0.0668, -0.265,  -0.0067, -0.0147, -0.0367, 0, 0, 0, 0, 0, 0, 0])
+angle_joint_end2 = rad_to_angle([-0.9048, -0.2441, -0.1065, -0.3311, -0.6778, -0.1039, -0.1589, 0, 0, 0, 0, 0, 0, 0])
+
+print(angle_joint_end2)
 
 if __name__ == "__main__":
     # 初始化节点
@@ -30,29 +37,6 @@ if __name__ == "__main__":
 
     # 发布关节数据控制
     time.sleep(1) #
-    joint_positions = [-10,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+    joint_positions = angle_joint_end2
     robot_instance.set_arm_traj_position(joint_positions)
 
-    time.sleep(1) #
-    joint_positions = [-20,0,0,0,0,0,0,0,0,0,0,0,0,0] 
-    robot_instance.set_arm_traj_position(joint_positions)
-
-    time.sleep(1) # 
-    joint_positions = [-30,0,0,0,0,0,0,0,0,0,0,0,0,0] 
-    robot_instance.set_arm_traj_position(joint_positions)
-    
-    time.sleep(1) # 
-    joint_positions = [-30,0,0,-10,0,0,0,0,0,0,0,0,0,0] 
-    robot_instance.set_arm_traj_position(joint_positions)
-
-    # 等待2s 
-    time.sleep(2)
-
-    # 手臂归中
-    robot_instance.set_robot_arm_recenter() 
-
-    # 等待1s
-    time.sleep(1)
-
-    # 关闭手臂控制
-    robot_instance.set_robot_arm_ctl_mode(False)
