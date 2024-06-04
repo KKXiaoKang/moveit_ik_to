@@ -5,6 +5,7 @@ traj/
 .catkin_workspace
 __pycache__/
 *.py[cod]
+*.pyc
 
 # Ignore specific JSON files
 src/kuavo4_arm_traj_planner/scripts/traj/catch_water/*.json
