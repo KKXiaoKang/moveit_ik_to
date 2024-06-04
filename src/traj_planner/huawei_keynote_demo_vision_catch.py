@@ -5,24 +5,6 @@
     当作pose
     直接pose调取规划
 """
-"""
-^Cheader: 
-  seq: 28848
-  stamp: 
-    secs: 1717481711
-    nsecs: 299343933
-  frame_id: "torso"
-pose: 
-  position: 
-    x: 0.4286000706092169
-    y: 0.19595687180148758
-    z: 0.17765896504629344
-  orientation: 
-    x: -0.0721942044186147
-    y: -0.7413773167519854
-    z: 0.01190906338497144
-    w: 0.6670875844019901
-"""
 import sys
 import rospy
 import moveit_commander
@@ -175,18 +157,6 @@ def detection_callback(msg):
     target_pose_stamped.pose.orientation.z = 0.00032694187655405566
     target_pose_stamped.pose.orientation.w = 0.6125633213777487
     
-    # """
-    #   orientation: 
-    # x: 0.03614969107398411
-    # y: -0.8039024572034098
-    # z: -0.0006953330262331505
-    # w: 0.5936611454774162
-    # """
-    # target_pose_stamped.pose.orientation.x = 0.03614969107398411
-    # target_pose_stamped.pose.orientation.y = -0.8039024572034098
-    # target_pose_stamped.pose.orientation.z = -0.0006953330262331505
-    # target_pose_stamped.pose.orientation.w = 0.5936611454774162
-
     # 设置规划的初始点
     now_joint_state = joint_state.position
     print("=====================================================")
