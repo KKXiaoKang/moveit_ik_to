@@ -5,6 +5,9 @@ import json
 import rospy
 import numpy as np
 
+import moveit_msgs.msg
+import trajectory_msgs.msg
+import rospy_message_converter.json_message_converter
 
 def load_json(path: str) -> dict:
     """ 加载json文件 """
@@ -31,3 +34,36 @@ def check_num(num: float) -> bool:
         return True
     else:
         return False
+
+def l_to_r(l_traj: moveit_msgs.msg.RobotTrajectory) -> moveit_msgs.msg.RobotTrajectory:
+    """左手到右手轨迹对称映射
+    """
+    r_traj = moveit_msgs.msg.RobotTrajectory()
+    r_traj.joint_trajectory.header = l_traj.joint_trajectory.header
+    r_traj.joint_trajectory.joint_names = [
+        "r_arm_pitch",
+        "r_arm_roll",
+        "r_arm_yaw",
+        "r_forearm_pitch",
+        "r_forearm_yaw",
+        "r_hand_roll",
+        "r_hand_pitch"
+    ]
+    
+    for l_point in l_traj.joint_trajectory.points:
+        r_point = trajectory_msgs.msg.JointTrajectoryPoint()
+        r_point.time_from_start = l_point.time_from_start
+        r_point.positions = [
+             l_point.positions[0],
+            -l_point.positions[1],
+            -l_point.positions[2],
+             l_point.positions[3],
+             l_point.positions[4],
+            -l_point.positions[5],
+             l_point.positions[6]
+        ]
+        r_point.velocities = l_point.velocities
+        r_point.accelerations = l_point.accelerations
+        r_traj.joint_trajectory.points.append(r_point)
+    
+    return r_traj
