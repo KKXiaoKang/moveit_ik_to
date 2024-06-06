@@ -23,7 +23,8 @@ from dynamic_biped.srv import controlEndHand, controlEndHandRequest, controlEndH
 
 from dynamic_biped.msg import walkCommand       
 from sensor_msgs.msg import JointState
-from dynamic_biped.msg import robotQVTau         # 全身关节的位置、速度、力矩，前四个为躯干
+# from dynamic_biped.msg import robotQVTau         # 全身关节的位置、速度、力矩，前四个为躯干
+from dynamic_biped.msg import robotArmInfo
 from dynamic_biped.msg import robotTorsoState    # 躯干的旋转角度、旋转速度、旋转加速度 / 质心的旋转角度、旋转速度、旋转加速度
 from dynamic_biped.msg import robotPhase         # 机器人目前的主状态，子状态
 
@@ -52,7 +53,7 @@ class kuavo:
         self._arm_traj_pub = rospy.Publisher("/kuavo_arm_traj", JointState, queue_size=10)
 
         # msg Sub
-        self._robotQVTau_sub = rospy.Subscriber("/robot_q_v_tau", robotQVTau, self.get_robotQVTau_callback)
+        self._robotQVTau_sub = rospy.Subscriber("/robot_q_v_tau", robotArmInfo, self.get_robotQVTau_callback)
         self._robotTorsoState_sub = rospy.Subscriber("/robot_torso_state", robotTorsoState, self.get_robotTorsoState_callback)
         self._robotPhase_sub = rospy.Subscriber("/leju_robot_phase", robotPhase, self.get_robotPhase_callback)
         self._walk_speed_sub = rospy.Subscriber("/walkCommand", walkCommand, self.get_walk_speed_callback)

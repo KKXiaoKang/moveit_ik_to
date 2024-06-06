@@ -21,16 +21,16 @@ from publisher import Publisher
 from executor import Executor
 import time
 from utils import angle_to_rad
-from dynamic_biped.msg import robotArmQVVD
+from dynamic_biped.msg import robotArmInfo
 from std_msgs.msg  import Header
 from kuavoRobotSDK import kuavo
 
 Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 Point_1 = angle_to_rad([ 20, 50, 0,   0, 10,   0, 0])
 Point_2 = angle_to_rad([ 30, 90, 0, -50, 90, -30, 0])
-Point_3 = angle_to_rad([  0, 90, 0, -50, 90, -30, 0])
-Point_4 = angle_to_rad([-50, 10, 0, -30,  0, -30, 0])
-Point_5 = angle_to_rad([-50,  0, 0, -20,  0, -50, 0])
+Point_3 = angle_to_rad([-15, 90, 0, -50, 45, -40, 0])
+Point_4 = angle_to_rad([-50, 50, 0, -30,  0, -50, 0])
+Point_5 = angle_to_rad([-50,  0, 0, -30,  0, -50, 0])
 
 rospy.init_node("test_node", anonymous=True)
 moveit_commander.roscpp_initialize(sys.argv)
@@ -201,6 +201,11 @@ def detection_callback(msg):
         time.sleep(2)
 
         # ------------------- 抓取服务 -------------------
+        print("=====================================================")
+        planner.set_start_state(now_joint_state)
+        traj = planner.plan_to_target_joints(Point_5)
+        executor.execute_traj(traj, wait=True)
+        logger.dump_traj(traj, file_name="testkk")
 
         # 回去
         # 抓完回去
@@ -294,7 +299,7 @@ if __name__ == "__main__":
     time.sleep(7)
 
     # 订阅
-    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)
+    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmInfo, joint_callback)
 
     # 订阅 /object_yolo_tf2_torso_result 话题
     yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
