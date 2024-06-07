@@ -194,7 +194,36 @@ def retreat_to_zero_left():
     """
     print("Retreating to zero position with left hand...")
     # 添加具体的回退到0位操作代码
-    pass
+    print("=====================================================")
+    now_joint_state = left_arm_state.position
+    planner.set_start_state(now_joint_state)
+    traj = planner.plan_to_target_joints(Point_4)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_1")
+
+    print("=====================================================")
+    planner.set_start_state(Point_4)
+    traj = planner.plan_to_target_joints(Point_3)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_2")
+
+    print("=====================================================")
+    planner.set_start_state(Point_3)
+    traj = planner.plan_to_target_joints(Point_2)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_3")
+
+    print("=====================================================")
+    planner.set_start_state(Point_2)
+    traj = planner.plan_to_target_joints(Point_1)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_4")
+
+    print("=====================================================")
+    planner.set_start_state(Point_1)
+    traj = planner.plan_to_target_joints(Point_zero)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_5")
 
 def retry_grab_vision_left():
     """
@@ -287,7 +316,7 @@ def main():
     # 订阅 /object_yolo_tf2_torso_result 话题
     yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
     
-    
+
     while True:
         print('\033c')
         menu()
