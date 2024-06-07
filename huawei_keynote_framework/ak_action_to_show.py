@@ -156,20 +156,107 @@ def joint_callback(data):
 
 "--------------------------- moveit 动作规划 菜单 ----------------------------"
 def grab_and_deliver_moveit():
+    global target_pose_stamped
+    global left_arm_state
+    global right_arm_state
+    global joint_state 
     """
     从固定点抓取纯moveit直到把水抓住 + 递水
     """
     print("Executing moveit-based water grabbing and delivery...")
     # 添加具体的moveit操作代码
-    pass
 
-def grab_and_deliver_vision():
+def grab_and_deliver_vision(): 
+    global IF_NEW_FLAG, trajectory_counter
+    global FIRST_TRAJECTORY_FLAG, Failed_count
+    global joint_state
+    global robot_instance
+    global Y_TO_MOVEIT_OFFSET
+    global planner, logger, publisher, executor 
+    global target_pose_stamped
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+
+    trajectory_counter = 0 # 每次都要把traj清空才可以开始
     """
     从固定点抓取纯视觉微调直到把水抓住 + 递水
     """
-    print("Executing vision-based water grabbing and delivery...")
+    print(" 从固定点抓取纯视觉微调直到把水抓住 + 递水 Executing vision-based water grabbing and delivery...")
     # 添加具体的视觉抓取操作代码
-    pass
+    print("================= 固定点 轨迹规划 =====================")
+    print("=====================================================")
+    planner.set_start_state(Point_zero)
+    traj = planner.plan_to_target_joints(Point_1)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_1")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_1)
+    traj = planner.plan_to_target_joints(Point_2)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_2")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_2)
+    traj = planner.plan_to_target_joints(Point_3)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_3")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_3)
+    traj = planner.plan_to_target_joints(Point_4)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_4")
+    executor.execute_traj(traj, wait=True)
+    
+    print("=====================================================")
+    planner.set_start_state(Point_4)
+    traj = planner.plan_to_target_joints(Point_5)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_5")
+
+    print("================= 视觉抓取 轨迹规划 =====================")
+    time.sleep(7)
+    now_joint_state = left_arm_state.position
+    planner.set_start_state(now_joint_state)
+    traj = planner.plan_to_target_pose(target_pose_stamped)
+    
+    while True:
+        # 发布
+        if traj:
+            if not IF_NEW_FLAG:
+                publisher.start_auto_publish()
+                IF_NEW_FLAG = True
+            print(" object traj success ! --- now is {0} traj ---".format(trajectory_counter))
+            logger.dump_traj(traj, file_name="test1_moveit_point")
+            trajectory_counter += 1  # 增加计数器
+            Failed_count = 0         # 失败计数器清0
+            # 执行 等待rviz执行结果
+            executor.execute_traj(traj, wait=True)
+
+            # 加入等待
+            time.sleep(3)
+        else:
+            rospy.logerr("Failed to plan trajectory")
+            Failed_count+=1
+            if Failed_count < 2:
+                publisher.stop_auto_publish()
+                IF_NEW_FLAG = False
+        # 计数器
+        if trajectory_counter >= MAX_TRAJECTORY_COUNT:
+            time.sleep(5)
+            # ------------------- 抓取服务 -------------------
+            # 打开虎口
+            end_control_to_chosse(robot_instance, 2)
+            time.sleep(2)
+
+            # 合并爪子
+            end_control_to_chosse(robot_instance, 1)
+            time.sleep(2)
+
+            # 退出循环
+            break
+
 
 def retreat_to_grab_position_left():
     """
@@ -192,6 +279,10 @@ def retreat_to_zero_left():
     """
     从当前位置回到0位Zero（左手）
     """
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+    
     print("Retreating to zero position with left hand...")
     # 添加具体的回退到0位操作代码
     print("=====================================================")
