@@ -287,53 +287,46 @@ def main():
     # 订阅 /object_yolo_tf2_torso_result 话题
     yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
     
-
-    # 等待3s topic 激活
-    time.sleep(3)
-
-    # 从当前位置回到待抓取的位置（左手）
-    retreat_to_grab_position_left()
-
-    # move_to_deliver_position_left
-    move_to_deliver_position_left()
-
-    # while True:
-    #     print('\033c')
-    #     menu()
+    
+    while True:
+        print('\033c')
+        menu()
         
-    #     # choice = input("请输入选择的操作编号 (6 退出): ")
-    #     choice = key_lisnter.getKey(0.1)
+        # choice = input("请输入选择的操作编号 (9 退出): ")
+        choice = key_lisnter.getKey(0.1)
+        if choice == 'q':
+            break
 
-    #     if choice == 'q':
-    #         break
+        # check input
+        try:
+            choice = int(choice)
+        except ValueError:
+            print("无效的选择，请输入数字。")
+            continue
 
-    #     try:
-    #         choice = int(choice)
-    #     except ValueError:
-    #         print("无效的选择，请输入数字。")
-    #         continue
-    #     if choice == '1':    # 从固定点抓取纯moveit直到把水抓住 + 递水
-    #         grab_and_deliver_moveit()
-    #     elif choice == '2':  # 从固定点抓取纯视觉微调直到把水抓住 + 递水
-    #         grab_and_deliver_vision()
-    #     elif choice == '3':  # 从当前位置回到待抓取的位置（左手）
-    #         retreat_to_grab_position_left()
-    #     elif choice == '4':  # 从当前位置回到0位Zero（左手）
-    #         retreat_to_zero_left()
-    #     elif choice == '5':  # 再抓一次视觉抓取（左手）
-    #         retry_grab_vision_left()
-    #     elif choice == '6':  # 再抓一次moveit固定点（左手）
-    #         retry_grab_moveit_left()
-    #     elif choice == '7':  # 从当前位置去到递水位置（左手）
-    #         move_to_deliver_position_left()
-    #     elif choice == '8':  # 击掌（右手）
-    #         high_five_right()    
-    #     elif choice == 9:
-    #         # 退出遥控操作
-    #         print("正在退出机器人执行操作...请稍后")
-    #         break         
-    #     else:
-    #         print("无效的选择, 请选择1-9之间的数字。")
+        # choose
+        if choice == 1:    # 从固定点抓取纯moveit直到把水抓住 + 递水
+            grab_and_deliver_moveit()
+        elif choice == 2:  # 从固定点抓取纯视觉微调直到把水抓住 + 递水
+            grab_and_deliver_vision()
+        elif choice == 3:  # 从当前位置回到待抓取的位置（左手）
+            retreat_to_grab_position_left()
+        elif choice == 4:  # 从当前位置回到0位Zero（左手）
+            retreat_to_zero_left()
+        elif choice == 5:  # 再抓一次视觉抓取（左手）
+            retry_grab_vision_left()
+        elif choice == 6:  # 再抓一次moveit固定点（左手）
+            retry_grab_moveit_left()
+        elif choice == 7:  # 从当前位置去到递水位置（左手）
+            move_to_deliver_position_left()
+        elif choice == 8:  # 击掌（右手）
+            high_five_right()    
+        elif choice == 9:
+            # 退出遥控操作
+            print("正在退出机器人执行操作...请稍后")
+            break         
+        else:
+            print("无效的选择, 请选择1-9之间的数字。")
 
 if __name__ == "__main__":
     main()
