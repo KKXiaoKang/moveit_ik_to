@@ -33,7 +33,7 @@ from kuavoRobotSDK import kuavo
 
 Robot_Flag = 1
 
-from dynamic_biped.msg import robotArmQVVD
+from dynamic_biped.msg import robotArmInfo
 
 rospy.init_node("kuavo_action_control_node", anonymous=True)
 moveit_commander.roscpp_initialize(sys.argv)
@@ -41,9 +41,13 @@ moveit_commander.roscpp_initialize(sys.argv)
 Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
 Point_1 = angle_to_rad([ 20, 50, 0,   0, 10,   0, 0])
 Point_2 = angle_to_rad([ 30, 90, 0, -50, 90, -30, 0])
-Point_3 = angle_to_rad([-15, 90, 0, -50, 45, -40, 0])
+Point_3 = angle_to_rad([-15, 70, 0, -50, 45, -40, 0])
 Point_4 = angle_to_rad([-50, 50, 0, -30,  0, -50, 0])
 Point_5 = angle_to_rad([-50,  0, 0, -30,  0, -50, 0])
+# 现场唯一要调试的参数就是这个固定最后的抓取点Point_catch_water
+Point_catch_water = angle_to_rad([-45, -8, 0, -30,  0, -15, 0])
+
+# 递水点
 Point_Send_water = angle_to_rad([-70,  0, 0, -45,  0, -10, 0])
 
 planner = Planner()
@@ -163,27 +167,9 @@ def grab_and_deliver_moveit():
     """
     从固定点抓取纯moveit直到把水抓住 + 递水
     """
-    print("Executing moveit-based water grabbing and delivery...")
+    print("从固定点抓取纯moveit直到把水抓住 + 递水 Executing moveit-based water grabbing and delivery...")
     # 添加具体的moveit操作代码
-
-def grab_and_deliver_vision(): 
-    global IF_NEW_FLAG, trajectory_counter
-    global FIRST_TRAJECTORY_FLAG, Failed_count
-    global joint_state
-    global robot_instance
-    global Y_TO_MOVEIT_OFFSET
-    global planner, logger, publisher, executor 
-    global target_pose_stamped
-    global left_arm_state
-    global right_arm_state
-    global joint_state
-
-    trajectory_counter = 0 # 每次都要把traj清空才可以开始
-    """
-    从固定点抓取纯视觉微调直到把水抓住 + 递水
-    """
-    print(" 从固定点抓取纯视觉微调直到把水抓住 + 递水 Executing vision-based water grabbing and delivery...")
-    # 添加具体的视觉抓取操作代码
+        # 添加具体的视觉抓取操作代码
     print("================= 固定点 轨迹规划 =====================")
     print("=====================================================")
     planner.set_start_state(Point_zero)
@@ -214,6 +200,72 @@ def grab_and_deliver_vision():
     traj = planner.plan_to_target_joints(Point_5)
     executor.execute_traj(traj, wait=True)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_5")
+
+    print("=====================================================")
+    planner.set_start_state(Point_5)
+    traj = planner.plan_to_target_joints(Point_catch_water)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_6")
+
+    # 等待手动到位置
+    time.sleep(7)
+
+    # 张开虎口
+    end_control_to_chosse(robot_instance, 2)
+    time.sleep(2)
+
+    # 合并爪子
+    end_control_to_chosse(robot_instance, 1)
+    time.sleep(2)
+
+def grab_and_deliver_vision(): 
+    global IF_NEW_FLAG, trajectory_counter
+    global FIRST_TRAJECTORY_FLAG, Failed_count
+    global joint_state
+    global robot_instance
+    global Y_TO_MOVEIT_OFFSET
+    global planner, logger, publisher, executor 
+    global target_pose_stamped
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+
+    trajectory_counter = 0 # 每次都要把traj清空才可以开始
+    """
+    从固定点抓取纯视觉微调直到把水抓住 + 递水
+    """
+    print(" 从固定点抓取纯视觉微调直到把水抓住 + 递水 Executing vision-based water grabbing and delivery...")
+    # 添加具体的视觉抓取操作代码
+    print("================= 固定点 轨迹规划 =====================")
+    print("=====================================================")
+    planner.set_start_state(Point_zero)
+    traj = planner.plan_to_target_joints(Point_1)
+    logger.dump_traj(traj, file_name="grab_and_deliver_vision_1")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_1)
+    traj = planner.plan_to_target_joints(Point_2)
+    logger.dump_traj(traj, file_name="grab_and_deliver_vision_2")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_2)
+    traj = planner.plan_to_target_joints(Point_3)
+    logger.dump_traj(traj, file_name="grab_and_deliver_vision_3")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Point_3)
+    traj = planner.plan_to_target_joints(Point_4)
+    logger.dump_traj(traj, file_name="grab_and_deliver_vision_4")
+    executor.execute_traj(traj, wait=True)
+    
+    print("=====================================================")
+    planner.set_start_state(Point_4)
+    traj = planner.plan_to_target_joints(Point_5)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="grab_and_deliver_vision_5")
 
     print("================= 视觉抓取 轨迹规划 =====================")
     time.sleep(7)
@@ -381,7 +433,22 @@ def retry_grab_moveit_left():
     """
     print("Retrying moveit-based grab with left hand...")
     # 添加具体的moveit抓取操作代码
-    pass
+    print("=====================================================")
+    planner.set_start_state(Point_5)
+    traj = planner.plan_to_target_joints(Point_catch_water)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retry_grab_moveit_left_1")
+
+    # 等待手动到位置
+    time.sleep(4)
+
+    # 张开虎口
+    end_control_to_chosse(robot_instance, 2)
+    time.sleep(2)
+
+    # 合并爪子
+    end_control_to_chosse(robot_instance, 1)
+    time.sleep(2)
 
 def move_to_deliver_position_left():
     """
@@ -449,11 +516,11 @@ def main():
     parser = argparse.ArgumentParser(description="Kuavo Robot Control Script")
     args = parser.parse_args()
 
-    robot = kuavo("kuavo_robot")  # 请替换成实际的机器人名字
+    robot_instance.set_robot_arm_ctl_mode(True)
     key_lisnter = keyboardlinstener()
 
     # 订阅
-    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)
+    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmInfo, joint_callback)
     
     # 订阅 /object_yolo_tf2_torso_result 话题
     yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
