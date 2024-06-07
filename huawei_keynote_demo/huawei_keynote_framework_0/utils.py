@@ -35,6 +35,16 @@ def check_num(num: float) -> bool:
     else:
         return False
 
+def load_traj(path: str) -> moveit_msgs.msg.RobotTrajectory:
+    """加载轨迹
+    """
+    path = os.path.join(os.path.dirname(__file__), path)
+    with open(path, "r") as f:
+        traj = json.load(f)
+    traj = rospy_message_converter.json_message_converter.convert_json_to_ros_message("moveit_msgs/RobotTrajectory", traj)
+    rospy.loginfo("轨迹已从{}中加载".format(path))
+    return traj
+    
 def l_to_r(l_traj: moveit_msgs.msg.RobotTrajectory) -> moveit_msgs.msg.RobotTrajectory:
     """左手到右手轨迹对称映射
     """
@@ -45,9 +55,9 @@ def l_to_r(l_traj: moveit_msgs.msg.RobotTrajectory) -> moveit_msgs.msg.RobotTraj
         "r_arm_roll",
         "r_arm_yaw",
         "r_forearm_pitch",
-        "r_forearm_yaw",
-        "r_hand_roll",
-        "r_hand_pitch"
+        "r_hand_yaw",
+        "r_hand_pitch",
+        "r_hand_roll"
     ]
     
     for l_point in l_traj.joint_trajectory.points:
@@ -59,8 +69,8 @@ def l_to_r(l_traj: moveit_msgs.msg.RobotTrajectory) -> moveit_msgs.msg.RobotTraj
             -l_point.positions[2],
              l_point.positions[3],
              l_point.positions[4],
-            -l_point.positions[5],
-             l_point.positions[6]
+            l_point.positions[5],
+            -l_point.positions[6]
         ]
         r_point.velocities = l_point.velocities
         r_point.accelerations = l_point.accelerations

@@ -22,13 +22,14 @@ from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest
 from vision_msgs.msg import Detection2DArray
 from sensor_msgs.msg import JointState
 from std_msgs.msg  import Header
+import sensor_msgs.msg
 
 import moveit_commander
 from planner import Planner
 from logger import Logger
 from publisher import Publisher
 from executor import Executor
-from utils import angle_to_rad
+from utils import angle_to_rad, l_to_r, load_traj, rad_to_angle
 from kuavoRobotSDK import kuavo
 
 Robot_Flag = 1
@@ -80,6 +81,13 @@ robot_instance = kuavo("4_1_kuavo")
 Y_TO_MOVEIT_OFFSET = 0
 # 实际要抓取的位置
 target_pose_stamped = PoseStamped()
+
+# 右手关节专用发布器
+robot_arm_publisher = rospy.Publisher(
+    "/kuavo_arm_traj",
+    sensor_msgs.msg.JointState,
+    queue_size=1
+)
 
 # 定义灵巧手抓取函数
 def end_control_to_chosse(kuavo_robot, chosse_flag):
@@ -169,7 +177,6 @@ def grab_and_deliver_moveit():
     """
     print("从固定点抓取纯moveit直到把水抓住 + 递水 Executing moveit-based water grabbing and delivery...")
     # 添加具体的moveit操作代码
-        # 添加具体的视觉抓取操作代码
     print("================= 固定点 轨迹规划 =====================")
     print("=====================================================")
     planner.set_start_state(Point_zero)
@@ -467,13 +474,102 @@ def move_to_deliver_position_left():
     executor.execute_traj(traj, wait=True)
     logger.dump_traj(traj, file_name="move_to_deliver_position_left")
 
+def publish_arm_traj(publisher, traj) -> None:
+    """只用于单独发布右手的轨迹
+    """
+    joint_state = sensor_msgs.msg.JointState()
+    positions  = [0 for _ in range(14)]
+    velocities = [0 for _ in range(14)]
+    rate = rospy.Rate(10)
+    
+    for point in traj.joint_trajectory.points:
+        if rospy.is_shutdown():
+            rospy.logerr("用户终止程序")
+            exit(0)
+        positions[0:7] = rad_to_angle(point.positions)
+        velocities[0:7] = point.velocities
+        joint_state.position = positions
+        joint_state.velocity = velocities
+        
+        publisher.publish(joint_state)
+        rate.sleep()
+
 def high_five_right():
     """
     击掌（右手）
     """
+    Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
+    Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
+    Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
+    Right_Point_3 = angle_to_rad([ -50,  50,   0, -30,   0, -50,  0])
+    Right_Point_4 = angle_to_rad([ -50, 0, -10, -80, -90,   0, 60])
+    Right_Point_5 = angle_to_rad([ -42, 0, -10, -60, -90,   0, 30])
+
     print("High fiving with right hand...")
     # 添加具体的击掌操作代码
-    pass
+    print("================= 固定点 轨迹规划 =====================")
+    print("=====================================================")
+    planner.set_start_state(Right_Point_zero)
+    traj = planner.plan_to_target_joints(Right_Point_1)
+    logger.dump_traj(traj, file_name="high_five_right_1")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_1)
+    traj = planner.plan_to_target_joints(Right_Point_2)
+    logger.dump_traj(traj, file_name="high_five_right_2")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_2)
+    traj = planner.plan_to_target_joints(Right_Point_3)
+    logger.dump_traj(traj, file_name="high_five_right_3")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_3)
+    traj = planner.plan_to_target_joints(Right_Point_4)
+    logger.dump_traj(traj, file_name="high_five_right_4")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_4)
+    traj = planner.plan_to_target_joints(Right_Point_5)
+    logger.dump_traj(traj, file_name="high_five_right_5")
+    executor.execute_traj(traj, wait=True)
+
+    print("...等待5s后击掌返回零点位置...")
+    time.sleep(5)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_5)
+    traj = planner.plan_to_target_joints(Right_Point_4)
+    logger.dump_traj(traj, file_name="high_five_right_6")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_4)
+    traj = planner.plan_to_target_joints(Right_Point_3)
+    logger.dump_traj(traj, file_name="high_five_right_7")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_3)
+    traj = planner.plan_to_target_joints(Right_Point_2)
+    logger.dump_traj(traj, file_name="high_five_right_8")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_2)
+    traj = planner.plan_to_target_joints(Right_Point_1)
+    logger.dump_traj(traj, file_name="high_five_right_9")
+    executor.execute_traj(traj, wait=True)
+
+    print("=====================================================")
+    planner.set_start_state(Right_Point_1)
+    traj = planner.plan_to_target_joints(Right_Point_zero)
+    logger.dump_traj(traj, file_name="high_five_right_10")
+    executor.execute_traj(traj, wait=True)
 
 "---------------------------keyboard listener----------------------------"
 class keyboardlinstener(object):
@@ -520,9 +616,7 @@ def main():
     # 订阅
     joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmInfo, joint_callback)
     
-    # 订阅 /object_yolo_tf2_torso_result 话题
-    # yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
-    
+    # for 菜单
     while True:
         print('\033c')
         menu()
