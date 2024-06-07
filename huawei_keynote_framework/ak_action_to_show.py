@@ -68,8 +68,8 @@ Failed_TRAJ_FLAG = False
 Failed_count = 1          
 # 初始化计数器
 trajectory_counter = 1
-# 最大轨迹次数 2 规划一次 / 3 规划2次 / 4 规划3次
-MAX_TRAJECTORY_COUNT = 3
+# 最大轨迹次数 2 规划2次 / 3 规划3次 / 4 规划4次
+MAX_TRAJECTORY_COUNT = 2
 # 初始化机器人
 robot_instance = kuavo("4_1_kuavo")
 # Y轴偏移量
@@ -217,11 +217,11 @@ def grab_and_deliver_vision():
 
     print("================= 视觉抓取 轨迹规划 =====================")
     time.sleep(7)
-    now_joint_state = left_arm_state.position
-    planner.set_start_state(now_joint_state)
-    traj = planner.plan_to_target_pose(target_pose_stamped)
-    
+
     while True:
+        now_joint_state = left_arm_state.position
+        planner.set_start_state(now_joint_state)
+        traj = planner.plan_to_target_pose(target_pose_stamped)
         # 发布
         if traj:
             if not IF_NEW_FLAG:
@@ -320,9 +320,60 @@ def retry_grab_vision_left():
     """
     再抓一次视觉抓取（左手）
     """
+    global IF_NEW_FLAG, trajectory_counter
+    global FIRST_TRAJECTORY_FLAG, Failed_count
+    global joint_state
+    global robot_instance
+    global Y_TO_MOVEIT_OFFSET
+    global planner, logger, publisher, executor 
+    global target_pose_stamped
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+
+    trajectory_counter = 0 # 每次都要把traj清空才可以开始
     print("Retrying vision-based grab with left hand...")
     # 添加具体的视觉抓取操作代码
-    pass
+    print("================= 视觉抓取 轨迹规划 =====================")
+
+    while True:
+        now_joint_state = left_arm_state.position
+        planner.set_start_state(now_joint_state)
+        traj = planner.plan_to_target_pose(target_pose_stamped)
+        # 发布
+        if traj:
+            if not IF_NEW_FLAG:
+                publisher.start_auto_publish()
+                IF_NEW_FLAG = True
+            print(" object traj success ! --- now is {0} traj ---".format(trajectory_counter))
+            logger.dump_traj(traj, file_name="test1_moveit_point")
+            trajectory_counter += 1  # 增加计数器
+            Failed_count = 0         # 失败计数器清0
+            # 执行 等待rviz执行结果
+            executor.execute_traj(traj, wait=True)
+
+            # 加入等待
+            time.sleep(3)
+        else:
+            rospy.logerr("Failed to plan trajectory")
+            Failed_count+=1
+            if Failed_count < 2:
+                publisher.stop_auto_publish()
+                IF_NEW_FLAG = False
+        # 计数器
+        if trajectory_counter >= MAX_TRAJECTORY_COUNT:
+            time.sleep(5)
+            # ------------------- 抓取服务 -------------------
+            # 打开虎口
+            end_control_to_chosse(robot_instance, 2)
+            time.sleep(2)
+
+            # 合并爪子
+            end_control_to_chosse(robot_instance, 1)
+            time.sleep(2)
+
+            # 退出循环
+            break
 
 def retry_grab_moveit_left():
     """
