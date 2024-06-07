@@ -29,9 +29,11 @@ from logger import Logger
 from publisher import Publisher
 from executor import Executor
 from utils import angle_to_rad
-
-from dynamic_biped.msg import robotArmInfo
 from kuavoRobotSDK import kuavo
+
+Robot_Flag = 1
+
+from dynamic_biped.msg import robotArmQVVD
 
 rospy.init_node("kuavo_action_control_node", anonymous=True)
 moveit_commander.roscpp_initialize(sys.argv)
@@ -42,11 +44,14 @@ Point_2 = angle_to_rad([ 30, 90, 0, -50, 90, -30, 0])
 Point_3 = angle_to_rad([-15, 90, 0, -50, 45, -40, 0])
 Point_4 = angle_to_rad([-50, 50, 0, -30,  0, -50, 0])
 Point_5 = angle_to_rad([-50,  0, 0, -30,  0, -50, 0])
+Point_Send_water = angle_to_rad([-70,  0, 0, -45,  0, -10, 0])
 
 planner = Planner()
 logger = Logger()
 publisher = Publisher()
 executor = Executor()
+
+DEBUG = False
 
 # 关节角度
 joint_state = JointState()
@@ -137,7 +142,7 @@ def joint_callback(data):
     joint_state.header = Header()
     joint_state.header.stamp = rospy.Time.now()
     joint_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
-    joint_state.position = data.q[:7]
+    joint_state.position = data.q
 
     right_arm_state.header = Header()
     right_arm_state.header.stamp = rospy.Time.now()
@@ -147,7 +152,7 @@ def joint_callback(data):
     left_arm_state.header = Header()
     left_arm_state.header.stamp = rospy.Time.now()
     left_arm_state.name = ['l_arm_pitch', 'l_arm_roll', 'l_arm_yaw', 'l_forearm_pitch','l_hand_yaw', 'l_hand_pitch', 'l_hand_roll','r_arm_pitch', 'r_arm_roll', 'r_arm_yaw', 'r_forearm_pitch','r_hand_yaw', 'r_hand_pitch', 'r_hand_roll']
-    left_arm_state.position = data.q[:7]
+    left_arm_state.position = data.q[0:7]
 
 "--------------------------- moveit 动作规划 菜单 ----------------------------"
 def grab_and_deliver_moveit():
@@ -170,10 +175,19 @@ def retreat_to_grab_position_left():
     """
     从当前位置回到待抓取的位置（左手）
     """
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+
     print("Retreating to grab position with left hand...")
     # 添加具体的回退操作代码
-    pass
-
+    print("=====================================================")
+    now_joint_state = left_arm_state.position
+    planner.set_start_state(now_joint_state)
+    traj = planner.plan_to_target_joints(Point_5)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="retreat_to_grab_position_left")
+    
 def retreat_to_zero_left():
     """
     从当前位置回到0位Zero（左手）
@@ -202,9 +216,18 @@ def move_to_deliver_position_left():
     """
     从当前位置去到递水位置（左手）
     """
+    global left_arm_state
+    global right_arm_state
+    global joint_state
+
     print("Moving to water delivery position with left hand...")
     # 添加具体的移动操作代码
-    pass
+    print("=====================================================")
+    now_joint_state = left_arm_state.position
+    planner.set_start_state(now_joint_state)
+    traj = planner.plan_to_target_joints(Point_Send_water)
+    executor.execute_traj(traj, wait=True)
+    logger.dump_traj(traj, file_name="move_to_deliver_position_left")
 
 def high_five_right():
     """
@@ -259,53 +282,58 @@ def main():
     key_lisnter = keyboardlinstener()
 
     # 订阅
-    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmInfo, joint_callback)
-
+    joint_sub = rospy.Subscriber('/robot_arm_q_v_tau', robotArmQVVD, joint_callback)
+    
     # 订阅 /object_yolo_tf2_torso_result 话题
     yolov_sub = rospy.Subscriber("/object_yolo_tf2_torso_result", Detection2DArray, detection_callback)
+    
 
-    # 设置频率为 10 Hz
-    rate = rospy.Rate(10)
+    # 等待3s topic 激活
+    time.sleep(3)
 
-    while not rospy.is_shutdown():
-        print('\033c')
-        menu()
-        # choice = input("请输入选择的操作编号 (6 退出): ")
-        choice = key_lisnter.getKey(0.1)
+    # 从当前位置回到待抓取的位置（左手）
+    retreat_to_grab_position_left()
 
-        if choice == 'q':
-            break
+    # move_to_deliver_position_left
+    move_to_deliver_position_left()
 
-        try:
-            choice = int(choice)
-        except ValueError:
-            print("无效的选择，请输入数字。")
-            continue
-        if choice == 1:   # 从固定点抓取纯moveit直到把水抓住 + 递水
-            end_control_to_chosse(robot, 0)
-        elif choice == 2: # 从固定点抓取纯视觉微调直到把水抓住 + 递水
-            end_control_to_chosse(robot, 2)
-        elif choice == 3: # 从当前位置回到待抓取的位置（左手）
-            end_control_to_chosse(robot, 1)
-        elif choice == 4: # 从当前位置回到0位Zero（左手）
-            end_control_to_chosse(robot, 1)
-        elif choice == 5: # 再抓一次视觉抓取（左手）
-            end_control_to_chosse(robot, 1)            
-        elif choice == 6: # 再抓一次moveit固定点（左手
-            end_control_to_chosse(robot, 1)
-        elif choice == 7: # 从当前位置去到递水位置（左手）
-            end_control_to_chosse(robot, 1)     
-        elif choice == 7: # 击掌（右手）
-            end_control_to_chosse(robot, 1)     
-        elif choice == 9:
-            # 退出遥控操作
-            print("正在退出机器人执行操作...请稍后")
-            break         
-        else:
-            print("无效的选择, 请选择1-9之间的数字。")
+    # while True:
+    #     print('\033c')
+    #     menu()
         
-        # 在循环中处理回调
-        rate.sleep()
+    #     # choice = input("请输入选择的操作编号 (6 退出): ")
+    #     choice = key_lisnter.getKey(0.1)
+
+    #     if choice == 'q':
+    #         break
+
+    #     try:
+    #         choice = int(choice)
+    #     except ValueError:
+    #         print("无效的选择，请输入数字。")
+    #         continue
+    #     if choice == '1':    # 从固定点抓取纯moveit直到把水抓住 + 递水
+    #         grab_and_deliver_moveit()
+    #     elif choice == '2':  # 从固定点抓取纯视觉微调直到把水抓住 + 递水
+    #         grab_and_deliver_vision()
+    #     elif choice == '3':  # 从当前位置回到待抓取的位置（左手）
+    #         retreat_to_grab_position_left()
+    #     elif choice == '4':  # 从当前位置回到0位Zero（左手）
+    #         retreat_to_zero_left()
+    #     elif choice == '5':  # 再抓一次视觉抓取（左手）
+    #         retry_grab_vision_left()
+    #     elif choice == '6':  # 再抓一次moveit固定点（左手）
+    #         retry_grab_moveit_left()
+    #     elif choice == '7':  # 从当前位置去到递水位置（左手）
+    #         move_to_deliver_position_left()
+    #     elif choice == '8':  # 击掌（右手）
+    #         high_five_right()    
+    #     elif choice == 9:
+    #         # 退出遥控操作
+    #         print("正在退出机器人执行操作...请稍后")
+    #         break         
+    #     else:
+    #         print("无效的选择, 请选择1-9之间的数字。")
 
 if __name__ == "__main__":
     main()
