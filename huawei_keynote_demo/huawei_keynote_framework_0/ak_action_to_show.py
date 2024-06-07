@@ -486,8 +486,8 @@ def publish_arm_traj(publisher, traj) -> None:
         if rospy.is_shutdown():
             rospy.logerr("用户终止程序")
             exit(0)
-        positions[0:7] = rad_to_angle(point.positions)
-        velocities[0:7] = point.velocities
+        positions[7:14] = rad_to_angle(point.positions)
+        velocities[7:14] = point.velocities
         joint_state.position = positions
         joint_state.velocity = velocities
         
@@ -498,6 +498,9 @@ def high_five_right():
     """
     击掌（右手）
     """
+
+    """
+    # 设计击掌（该击掌的实际执行的动作是左手轨迹，在plan的时候就自动执行左手轨迹了）
     Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
     Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
     Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
@@ -569,7 +572,53 @@ def high_five_right():
     planner.set_start_state(Right_Point_1)
     traj = planner.plan_to_target_joints(Right_Point_zero)
     logger.dump_traj(traj, file_name="high_five_right_10")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=True)    
+    """
+
+    # 执行击掌，从json当中读取左手轨迹进行映射
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_1.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_2.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_3.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_4.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_5.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    print("等待2s后击掌返回零点位置...")
+    time.sleep(2)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_6.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_7.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_8.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_9.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
+    l_traj = load_traj("./traj/0_high_five_right/high_five_right_10.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
+
 
 "---------------------------keyboard listener----------------------------"
 class keyboardlinstener(object):

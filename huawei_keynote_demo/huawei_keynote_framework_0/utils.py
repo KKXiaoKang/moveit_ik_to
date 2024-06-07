@@ -4,6 +4,7 @@
 import json
 import rospy
 import numpy as np
+import os
 
 import moveit_msgs.msg
 import trajectory_msgs.msg
@@ -68,7 +69,7 @@ def l_to_r(l_traj: moveit_msgs.msg.RobotTrajectory) -> moveit_msgs.msg.RobotTraj
             -l_point.positions[1],
             -l_point.positions[2],
              l_point.positions[3],
-             l_point.positions[4],
+            -l_point.positions[4],
             l_point.positions[5],
             -l_point.positions[6]
         ]
