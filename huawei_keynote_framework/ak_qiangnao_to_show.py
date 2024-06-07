@@ -61,14 +61,14 @@ def menu():
     print("9. 退出灵巧手操作")
 
 def main():
-    rospy.init_node("------欢迎来到灵巧手控制脚本-------------")
+    rospy.init_node("kuavo_music_control_node")
     parser = argparse.ArgumentParser(description="Kuavo Robot Control Script")
     args = parser.parse_args()
 
     robot = kuavo("kuavo_robot")  # 请替换成实际的机器人名字
     key_lisnter = keyboardlinstener()
 
-    while True:
+    while not rospy.is_shutdown():
         print('\033c')
         menu()
         # choice = input("请输入选择的操作编号 (6 退出): ")
