@@ -15,6 +15,6 @@
     "orientation_tolerance"     :0,
     "position_tolerance"        :0,
     
-    "publish_rate"              :10,
+    "publish_rate"              :15,
     "gripper_motion_time"       :1
 }
