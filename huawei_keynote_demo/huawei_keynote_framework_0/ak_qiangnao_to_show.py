@@ -19,10 +19,10 @@ import tty
 import select
 from dynamic_biped.msg import robotHeadMotionData
 
-hand_max_left_pose = [-30.0, 0.0]
-hand_max_right_pose = [30.0, 0.0]
+hand_max_left_pose = [30.0, 0.0]
+hand_max_right_pose = [-30.0, 0.0]
 hand_zero_pose = [0.0, 0.0]
-hand_up_pose = [10, 0.0]
+hand_up_pose = [0.0, -20.0]
 
 class keyboardlinstener(object):
     def __init__(self):
@@ -110,9 +110,9 @@ def main():
         elif choice == 5: # 头部 -- 扭头右边
             call_head_motion_data_pub(pub, hand_max_right_pose)
         elif choice == 6: # 头部 -- 微微抬头
-            call_head_motion_data_pub(pub, hand_zero_pose)
-        elif choice == 7: # 头部 -- 回到0位
             call_head_motion_data_pub(pub, hand_up_pose)
+        elif choice == 7: # 头部 -- 回到0位
+            call_head_motion_data_pub(pub, hand_zero_pose)
         elif choice == 9:
             # 退出遥控操作
             print("正在退出灵巧手+头部操作...请稍后")
