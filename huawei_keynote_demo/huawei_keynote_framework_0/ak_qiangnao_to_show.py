@@ -124,7 +124,7 @@ def main():
         elif choice == 6: # 头部 -- 微微抬头
             call_head_motion_data_pub(pub, hand_up_pose)
         elif choice == 7: # 头部 -- 回到0位
-            call_head_motion_data_pub(pub, hand_zero_pose)\
+            call_head_motion_data_pub(pub, hand_zero_pose)
         elif choice == 8: # 灵巧手 -- 点赞双手
             end_control_to_chosse(robot, 3)
         elif choice == 0: # 灵巧手 -- ok手势
