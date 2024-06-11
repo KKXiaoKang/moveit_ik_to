@@ -60,6 +60,9 @@ def end_control_to_chosse(kuavo_robot, chosse_flag):
     thumb_up_left_pose =  [0, 0, 80, 80, 80, 80]
     thumb_up_right_pose = [0, 0, 80, 80, 80, 80]
     
+    ok_left_pose =  [65, 65, 90, 0, 0, 0]
+    ok_right_pose = [65, 65, 90, 0, 0, 0]
+    
     if chosse_flag == 0:
         kuavo_robot.set_end_control(zero_pose, zero_pose)
     elif chosse_flag == 1:
@@ -68,6 +71,8 @@ def end_control_to_chosse(kuavo_robot, chosse_flag):
         kuavo_robot.set_end_control(open_left_pose, open_right_pose)
     elif chosse_flag == 3:
         kuavo_robot.set_end_control(thumb_up_left_pose, thumb_up_right_pose)
+    elif chosse_flag == 4:
+        kuavo_robot.set_end_control(ok_left_pose, ok_right_pose)
 
 def menu():
     print("选择要灵巧手操作或者头部的动作,直接点击对应序号即可,无需按下Enter:")
@@ -79,6 +84,7 @@ def menu():
     print("6. 头部 -- 微微抬头")
     print("7. 头部 -- 回到0位")
     print("8. 灵巧手 -- 点赞")
+    print("0. 灵巧手 -- ok手势")
     print("----------")
     print("9. 退出灵巧手操作或者头部操作")
 
@@ -121,6 +127,8 @@ def main():
             call_head_motion_data_pub(pub, hand_zero_pose)\
         elif choice == 8: # 灵巧手 -- 点赞双手
             end_control_to_chosse(robot, 3)
+        elif choice == 0: # 灵巧手 -- ok手势
+            end_control_to_chosse(robot, 4)
         elif choice == 9:
             # 退出遥控操作
             print("正在退出灵巧手+头部操作...请稍后")
