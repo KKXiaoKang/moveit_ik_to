@@ -49,7 +49,7 @@ Point_5 = angle_to_rad([-50,  0, 0, -30,  0, -50, 0])
 Point_catch_water = angle_to_rad([-45, -8, 0, -30,  0, -15, 0])
 
 # 递水点
-Point_Send_water = angle_to_rad([-70,  0, 0, -45,  0, -10, 0])
+Point_Send_water = angle_to_rad([-70,  30, 0, -45,  70, -10, 0])
 
 planner = Planner()
 logger = Logger()
@@ -480,7 +480,7 @@ def publish_arm_traj(publisher, traj) -> None:
     joint_state = sensor_msgs.msg.JointState()
     positions  = [0 for _ in range(14)]
     velocities = [0 for _ in range(14)]
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(20)
     
     for point in traj.joint_trajectory.points:
         if rospy.is_shutdown():
@@ -499,14 +499,14 @@ def high_five_right():
     击掌（右手）
     """
 
-    """
+    '''
     # 设计击掌（该击掌的实际执行的动作是左手轨迹，在plan的时候就自动执行左手轨迹了）
     Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
     Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
     Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
     Right_Point_3 = angle_to_rad([ -50,  50,   0, -30,   0, -50,  0])
-    Right_Point_4 = angle_to_rad([ -50, 0, -10, -80, -90,   0, 60])
-    Right_Point_5 = angle_to_rad([ -42, 0, -10, -60, -90,   0, 30])
+    Right_Point_4 = angle_to_rad([ -60, 20, -10, -80, -70,   0, 60])
+    Right_Point_5 = angle_to_rad([ -50, 30, -10, -60, -60,   0, 30])
 
     print("High fiving with right hand...")
     # 添加具体的击掌操作代码
@@ -515,65 +515,65 @@ def high_five_right():
     planner.set_start_state(Right_Point_zero)
     traj = planner.plan_to_target_joints(Right_Point_1)
     logger.dump_traj(traj, file_name="high_five_right_1")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_1)
     traj = planner.plan_to_target_joints(Right_Point_2)
     logger.dump_traj(traj, file_name="high_five_right_2")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_2)
     traj = planner.plan_to_target_joints(Right_Point_3)
     logger.dump_traj(traj, file_name="high_five_right_3")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_3)
     traj = planner.plan_to_target_joints(Right_Point_4)
     logger.dump_traj(traj, file_name="high_five_right_4")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_4)
     traj = planner.plan_to_target_joints(Right_Point_5)
     logger.dump_traj(traj, file_name="high_five_right_5")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("...等待5s后击掌返回零点位置...")
-    time.sleep(5)
+    time.sleep(3)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_5)
     traj = planner.plan_to_target_joints(Right_Point_4)
     logger.dump_traj(traj, file_name="high_five_right_6")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_4)
     traj = planner.plan_to_target_joints(Right_Point_3)
     logger.dump_traj(traj, file_name="high_five_right_7")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_3)
     traj = planner.plan_to_target_joints(Right_Point_2)
     logger.dump_traj(traj, file_name="high_five_right_8")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_2)
     traj = planner.plan_to_target_joints(Right_Point_1)
     logger.dump_traj(traj, file_name="high_five_right_9")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_1)
     traj = planner.plan_to_target_joints(Right_Point_zero)
     logger.dump_traj(traj, file_name="high_five_right_10")
-    executor.execute_traj(traj, wait=True)    
-    """
+    executor.execute_traj(traj, wait=False)    
+    '''    
 
     # 执行击掌，从json当中读取左手轨迹进行映射
     l_traj = load_traj("./traj/0_high_five_right/high_five_right_1.json")
@@ -596,8 +596,8 @@ def high_five_right():
     r_traj = l_to_r(l_traj)
     publish_arm_traj(robot_arm_publisher, r_traj)
 
-    print("等待2s后击掌返回零点位置...")
-    time.sleep(2)
+    print("等待1s后击掌返回零点位置...")
+    time.sleep(1)
 
     l_traj = load_traj("./traj/0_high_five_right/high_five_right_6.json")
     r_traj = l_to_r(l_traj)
