@@ -182,36 +182,36 @@ def grab_and_deliver_moveit():
     planner.set_start_state(Point_zero)
     traj = planner.plan_to_target_joints(Point_1)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_1")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Point_1)
     traj = planner.plan_to_target_joints(Point_2)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_2")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Point_2)
     traj = planner.plan_to_target_joints(Point_3)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_3")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Point_3)
     traj = planner.plan_to_target_joints(Point_4)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_4")
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
     
     print("=====================================================")
     planner.set_start_state(Point_4)
     traj = planner.plan_to_target_joints(Point_5)
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_5")
 
     print("=====================================================")
     planner.set_start_state(Point_5)
     traj = planner.plan_to_target_joints(Point_catch_water)
-    executor.execute_traj(traj, wait=True)
+    executor.execute_traj(traj, wait=False)
     logger.dump_traj(traj, file_name="grab_and_deliver_moveit_6")
 
     # 等待手动到位置
