@@ -364,54 +364,86 @@ def high_five_right():
 
 def high_five_right_plan():
     """
-    击掌（右手）
+    侧面击掌
     """
-    Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
-    Right_Point_1 = angle_to_rad([  20,  50,   0,   -20,  10,   0,  0])
-    Right_Point_2 = angle_to_rad([ -10, 60, 80, -60, -80,   0, 60])
-    Right_Point_3 = angle_to_rad([ -10, 60, 80, -45, -80,   0, 30])
+    # Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
+    # Right_Point_1 = angle_to_rad([  20,  50,   0,   -20,  10,   0,  0])
+    # Right_Point_2 = angle_to_rad([ -10, 60, 80, -60, -80,   0, 60])
+    # Right_Point_3 = angle_to_rad([ -10, 60, 80, -45, -80,   0, 30])
+
+    # print("High fiving with right hand...")
+    # # 添加具体的击掌操作代码
+    # print("================= 固定点 轨迹规划 =====================")
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_zero)
+    # traj = planner.plan_to_target_joints(Right_Point_1)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_1")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_1)
+    # traj = planner.plan_to_target_joints(Right_Point_2)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_2")
+    # executor.execute_traj(traj, wait=False)
+
+    # # key_value = input("--------------- 请输入enter 键 进行击掌 --------------")
+    # time.sleep(3)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_2)
+    # traj = planner.plan_to_target_joints(Right_Point_3)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_3")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_3)
+    # traj = planner.plan_to_target_joints(Right_Point_2)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_4")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_2)
+    # traj = planner.plan_to_target_joints(Right_Point_1)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_5")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_1)
+    # traj = planner.plan_to_target_joints(Right_Point_zero)
+    # logger.dump_traj(traj, file_name="high_five_right_plan_6")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("===================完成击掌===========================")
 
     print("High fiving with right hand...")
     # 添加具体的击掌操作代码
     print("================= 固定点 轨迹规划 =====================")
     print("=====================================================")
-    planner.set_start_state(Right_Point_zero)
-    traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="high_five_right_1")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_1.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_1)
-    traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="high_five_right_2")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_2.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     # key_value = input("--------------- 请输入enter 键 进行击掌 --------------")
     time.sleep(3)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_2)
-    traj = planner.plan_to_target_joints(Right_Point_3)
-    logger.dump_traj(traj, file_name="high_five_right_3")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_3.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_3)
-    traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="high_five_right_3")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_4.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_2)
-    traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="high_five_right_3")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_5.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_1)
-    traj = planner.plan_to_target_joints(Right_Point_zero)
-    logger.dump_traj(traj, file_name="high_five_right_3")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_6.json")
+    publish_l_arm_traj(robot_arm_publisher, l_traj)
 
     print("===================完成击掌===========================")
 
@@ -429,13 +461,13 @@ def give_big_hand():
     print("=====================================================")
     planner.set_start_state(Right_Point_zero)
     traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="high_five_right_1")
+    logger.dump_traj(traj, file_name="give_big_hand_1")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_1)
     traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="high_five_right_2")
+    logger.dump_traj(traj, file_name="give_big_hand_2")
     executor.execute_traj(traj, wait=False)
 
     # 张开虎口
@@ -445,19 +477,19 @@ def give_big_hand():
     print("=====================================================")
     planner.set_start_state(Right_Point_2)
     traj = planner.plan_to_target_joints(Right_Point_3)
-    logger.dump_traj(traj, file_name="high_five_right_3")
+    logger.dump_traj(traj, file_name="give_big_hand_3")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_3)
     traj = planner.plan_to_target_joints(Right_Point_4)
-    logger.dump_traj(traj, file_name="high_five_right_4")
+    logger.dump_traj(traj, file_name="give_big_hand_4")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_4)
     traj = planner.plan_to_target_joints(Right_Point_5)
-    logger.dump_traj(traj, file_name="high_five_right_5")
+    logger.dump_traj(traj, file_name="give_big_hand_5")
     executor.execute_traj(traj, wait=False)
 
     # 比ok手势
@@ -470,13 +502,13 @@ def give_big_hand():
     print("=====================================================")
     planner.set_start_state(Right_Point_5)
     traj = planner.plan_to_target_joints(Right_Point_4)
-    logger.dump_traj(traj, file_name="high_five_right_6")
+    logger.dump_traj(traj, file_name="give_big_hand_6")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_4)
     traj = planner.plan_to_target_joints(Right_Point_3)
-    logger.dump_traj(traj, file_name="high_five_right_7")
+    logger.dump_traj(traj, file_name="give_big_hand_7")
     executor.execute_traj(traj, wait=False)
 
     # 完全关闭
@@ -486,19 +518,19 @@ def give_big_hand():
     print("=====================================================")
     planner.set_start_state(Right_Point_3)
     traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="high_five_right_8")
+    logger.dump_traj(traj, file_name="give_big_hand_8")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_2)
     traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="high_five_right_9")
+    logger.dump_traj(traj, file_name="give_big_hand_9")
     executor.execute_traj(traj, wait=False)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_1)
     traj = planner.plan_to_target_joints(Right_Point_zero)
-    logger.dump_traj(traj, file_name="high_five_right_10")
+    logger.dump_traj(traj, file_name="give_big_hand_10")
     executor.execute_traj(traj, wait=False)    
 
 "---------------------------keyboard listener----------------------------"
