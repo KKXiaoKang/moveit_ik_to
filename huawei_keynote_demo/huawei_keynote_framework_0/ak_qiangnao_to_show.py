@@ -19,8 +19,8 @@ import tty
 import select
 from dynamic_biped.msg import robotHeadMotionData
 
-hand_max_left_pose = [30.0, 0.0]
-hand_max_right_pose = [-30.0, 0.0]
+hand_max_left_pose = [30.0, -10.0]
+hand_max_right_pose = [-30.0, -10.0]
 hand_zero_pose = [0.0, 0.0]
 hand_up_pose = [0.0, -20.0]
 
@@ -55,7 +55,7 @@ def end_control_to_chosse(kuavo_robot, chosse_flag):
     catch_right_pose = [65, 65, 90, 90, 90, 90]
 
     open_left_pose = [100, 0, 0, 0, 0, 0]
-    open_right_pose = [100, 0, 0, 0, 0, 0]
+    open_right_pose = [0, 100, 0, 0, 0, 0]
 
     thumb_up_left_pose =  [0, 0, 80, 80, 80, 80]
     thumb_up_right_pose = [0, 0, 80, 80, 80, 80]

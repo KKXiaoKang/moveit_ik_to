@@ -49,7 +49,7 @@ Point_5 = angle_to_rad([-50,  0, 0, -30,  0, -50, 0])
 Point_catch_water = angle_to_rad([-45, -8, 0, -30,  0, -15, 0])
 
 # 递水点
-Point_Send_water = angle_to_rad([-70,  30, 0, -45,  70, -10, 0])
+Point_Send_water = angle_to_rad([-65, -8, 0, -30,  0, -25, 0])
 
 planner = Planner()
 logger = Logger()
@@ -225,6 +225,12 @@ def grab_and_deliver_moveit():
     end_control_to_chosse(robot_instance, 1)
     time.sleep(2)
 
+    # 直接规划到递水
+    planner.set_start_state(Point_catch_water)
+    traj = planner.plan_to_target_joints(Point_Send_water)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_7")
+
 def grab_and_deliver_vision(): 
     global IF_NEW_FLAG, trajectory_counter
     global FIRST_TRAJECTORY_FLAG, Failed_count
@@ -345,8 +351,8 @@ def retreat_to_zero_left():
     print("Retreating to zero position with left hand...")
     # 添加具体的回退到0位操作代码
     print("=====================================================")
-    now_joint_state = left_arm_state.position
-    planner.set_start_state(now_joint_state)
+    #now_joint_state = left_arm_state.position
+    planner.set_start_state(Point_Send_water)
     traj = planner.plan_to_target_joints(Point_4)
     executor.execute_traj(traj, wait=False)
     logger.dump_traj(traj, file_name="retreat_to_zero_left_1")
@@ -499,14 +505,14 @@ def high_five_right():
     击掌（右手）
     """
 
-    '''
+    
     # 设计击掌（该击掌的实际执行的动作是左手轨迹，在plan的时候就自动执行左手轨迹了）
     Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
     Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
     Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
     Right_Point_3 = angle_to_rad([ -50,  50,   0, -30,   0, -50,  0])
-    Right_Point_4 = angle_to_rad([ -60, 20, -10, -80, -70,   0, 60])
-    Right_Point_5 = angle_to_rad([ -50, 30, -10, -60, -60,   0, 30])
+    Right_Point_4 = angle_to_rad([ -60, 50, 20, -80, -70,   0, 60])
+    Right_Point_5 = angle_to_rad([ -50, 60, 50, -60, -60,   0, 30])
 
     print("High fiving with right hand...")
     # 添加具体的击掌操作代码
@@ -542,7 +548,7 @@ def high_five_right():
     executor.execute_traj(traj, wait=False)
 
     print("...等待5s后击掌返回零点位置...")
-    time.sleep(3)
+    time.sleep(2)
 
     print("=====================================================")
     planner.set_start_state(Right_Point_5)
@@ -573,51 +579,51 @@ def high_five_right():
     traj = planner.plan_to_target_joints(Right_Point_zero)
     logger.dump_traj(traj, file_name="high_five_right_10")
     executor.execute_traj(traj, wait=False)    
-    '''    
+        
 
-    # 执行击掌，从json当中读取左手轨迹进行映射
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_1.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # # 执行击掌，从json当中读取左手轨迹进行映射
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_1.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_2.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_2.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_3.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_3.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_4.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_4.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_5.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_5.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    print("等待1s后击掌返回零点位置...")
-    time.sleep(1)
+    # print("等待1s后击掌返回零点位置...")
+    # time.sleep(1)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_6.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_6.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_7.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_7.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_8.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_8.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_9.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_9.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
-    l_traj = load_traj("./traj/0_high_five_right/high_five_right_10.json")
-    r_traj = l_to_r(l_traj)
-    publish_arm_traj(robot_arm_publisher, r_traj)
+    # l_traj = load_traj("./traj/0_high_five_right/high_five_right_10.json")
+    # r_traj = l_to_r(l_traj)
+    # publish_arm_traj(robot_arm_publisher, r_traj)
 
 
 "---------------------------keyboard listener----------------------------"
