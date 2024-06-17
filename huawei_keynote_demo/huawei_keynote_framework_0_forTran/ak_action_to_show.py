@@ -218,6 +218,51 @@ def publish_l_arm_traj(publisher, traj) -> None:
         rate.sleep()
 
 def grab_and_deliver_moveit():
+    # global target_pose_stamped
+    # global left_arm_state
+    # global right_arm_state
+    # global joint_state 
+    # """
+    # 从固定点抓取纯moveit直到把水抓住 + 递水
+    # """
+    # print("从固定点抓取纯moveit直到把水抓住 + 递水 Executing moveit-based water grabbing and delivery...")
+    # # 添加具体的moveit操作代码
+    # print("================= 读取json的轨迹规划 =====================")
+    # print("=====================================================")
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_1.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_2.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_3.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_4.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_5.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_6.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # # 等待手动到位置
+    # time.sleep(4)
+
+    # # 张开虎口
+    # for i in range(4):
+    #     end_control_to_chosse(robot_instance, 2)
+    #     time.sleep(0.5)
+
+    # # 合并爪子
+    # for i in range(3):
+    #     end_control_to_chosse(robot_instance, 1)
+    #     time.sleep(1)
+
+    # l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_7.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
     global target_pose_stamped
     global left_arm_state
     global right_arm_state
@@ -227,58 +272,85 @@ def grab_and_deliver_moveit():
     """
     print("从固定点抓取纯moveit直到把水抓住 + 递水 Executing moveit-based water grabbing and delivery...")
     # 添加具体的moveit操作代码
-    print("================= 读取json的轨迹规划 =====================")
+    print("================= 固定点 轨迹规划 =====================")
     print("=====================================================")
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_1.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    planner.set_start_state(Point_zero)
+    traj = planner.plan_to_target_joints(Point_1)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_1")
+    executor.execute_traj(traj, wait=False)
+
+    print("=====================================================")
+    planner.set_start_state(Point_1)
+    traj = planner.plan_to_target_joints(Point_2)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_2")
+    executor.execute_traj(traj, wait=False)
+
+    print("=====================================================")
+    planner.set_start_state(Point_2)
+    traj = planner.plan_to_target_joints(Point_3)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_3")
+    executor.execute_traj(traj, wait=False)
+
+    print("=====================================================")
+    planner.set_start_state(Point_3)
+    traj = planner.plan_to_target_joints(Point_4)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_4")
+    executor.execute_traj(traj, wait=False)
     
+    print("=====================================================")
+    planner.set_start_state(Point_4)
+    traj = planner.plan_to_target_joints(Point_5)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_5")
 
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_2.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
-
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_3.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
-
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_4.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
-
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_5.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
-
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_6.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    print("=====================================================")
+    planner.set_start_state(Point_5)
+    traj = planner.plan_to_target_joints(Point_catch_water)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_6")
 
     # 等待手动到位置
-    time.sleep(4)
+    time.sleep(7)
 
     # 张开虎口
-    for i in range(4):
-        end_control_to_chosse(robot_instance, 2)
-        time.sleep(0.5)
+    end_control_to_chosse(robot_instance, 2)
+    time.sleep(2)
 
     # 合并爪子
-    for i in range(3):
-        end_control_to_chosse(robot_instance, 1)
-        time.sleep(1)
+    end_control_to_chosse(robot_instance, 1)
+    time.sleep(2)
 
-    l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_7.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    # 直接规划到递水
+    planner.set_start_state(Point_catch_water)
+    traj = planner.plan_to_target_joints(Point_Send_water)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="grab_and_deliver_moveit_7")
 
 def retreat_to_zero_left():
+    """
+    从当前位置回到0位Zero（左手）
+    """
+    # global left_arm_state
+    # global right_arm_state
+    # global joint_state
+    
+    # print("Retreating to zero position with left hand...")
+    # # 添加具体的回退到0位操作代码
+    # print("=====================================================")
+    # l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_1.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_2.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_3.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_4.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
+
+    # l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_5.json")
+    # publish_l_arm_traj(robot_arm_publisher, l_traj)
     """
     从当前位置回到0位Zero（左手）
     """
@@ -289,30 +361,35 @@ def retreat_to_zero_left():
     print("Retreating to zero position with left hand...")
     # 添加具体的回退到0位操作代码
     print("=====================================================")
-    l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_1.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    #now_joint_state = left_arm_state.position
+    planner.set_start_state(Point_Send_water)
+    traj = planner.plan_to_target_joints(Point_4)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_1")
 
-    l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_2.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    print("=====================================================")
+    planner.set_start_state(Point_4)
+    traj = planner.plan_to_target_joints(Point_3)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_2")
 
-    l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_3.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    print("=====================================================")
+    planner.set_start_state(Point_3)
+    traj = planner.plan_to_target_joints(Point_2)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_3")
 
-    l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_4.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    print("=====================================================")
+    planner.set_start_state(Point_2)
+    traj = planner.plan_to_target_joints(Point_1)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_4")
 
-    l_traj = load_traj("./traj/retreat_to_zero_left/retreat_to_zero_left_5.json")
-    publish_l_arm_traj(robot_arm_publisher, l_traj)
-    #r_traj = l_to_r(l_traj)
-    #publish_arm_traj(robot_arm_publisher, r_traj)
+    print("=====================================================")
+    planner.set_start_state(Point_1)
+    traj = planner.plan_to_target_joints(Point_zero)
+    executor.execute_traj(traj, wait=False)
+    logger.dump_traj(traj, file_name="retreat_to_zero_left_5")
 
 def publish_arm_traj(publisher, traj) -> None:
     """只用于单独发布右手的轨迹
@@ -458,7 +535,7 @@ def high_five_right_plan():
     publish_arm_traj(robot_arm_publisher, r_traj)
 
     # key_value = input("--------------- 请输入enter 键 进行击掌 --------------")
-    time.sleep(3)
+    time.sleep(1)
 
     print("=====================================================")
     l_traj = load_traj("./traj/high_five_right_plan/high_five_right_plan_3.json")
@@ -704,8 +781,8 @@ def main():
         elif choice == 4:  # 从当前位置回到0位Zero（右手）
             retreat_to_zero_left()
         elif choice == 6:  # 点赞往前（左手）
-            give_big_hand()
-            #pass
+            #give_big_hand()
+            pass
         elif choice == 8:  # 正面击掌（左手）- json读取
             high_five_right()    
         elif choice == 7:  # 侧面击掌（左手）-  实时规划
