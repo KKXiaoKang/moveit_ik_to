@@ -487,49 +487,119 @@ def high_five_right_plan():
     print("===================完成击掌===========================")
 
 def give_big_hand():
-    Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
-    Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
-    Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
-    Right_Point_3 = angle_to_rad([ -50,  50,   0, -30,   0, -50,  0])
-    Right_Point_4 = angle_to_rad([ -60, 0,  -10, -80, 0, 0, 0])
-    Right_Point_5 = angle_to_rad([ -50, 10, -10, -60, 0, 0, 0])
+    # Right_Point_zero = angle_to_rad([0, 0, 0, 0, 0, 0, 0])
+    # Right_Point_1 = angle_to_rad([  20,  50,   0,   0,  10,   0,  0])
+    # Right_Point_2 = angle_to_rad([ -20,  80,   0, -50,  45, -40,  0])
+    # Right_Point_3 = angle_to_rad([ -50,  50,   0, -30,   0, -50,  0])
+    # Right_Point_4 = angle_to_rad([ -60, 0,  -10, -80, 0, 0, 0])
+    # Right_Point_5 = angle_to_rad([ -50, 10, -10, -60, 0, 0, 0])
 
-    print("High fiving with right hand...")
-    # 添加具体的击掌操作代码
-    print("================= 固定点 轨迹规划 =====================")
+    # print("High fiving with right hand...")
+    # # 添加具体的击掌操作代码
+    # print("================= 固定点 轨迹规划 =====================")
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_zero)
+    # traj = planner.plan_to_target_joints(Right_Point_1)
+    # logger.dump_traj(traj, file_name="give_big_hand_1")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_1)
+    # traj = planner.plan_to_target_joints(Right_Point_2)
+    # logger.dump_traj(traj, file_name="give_big_hand_2")
+    # executor.execute_traj(traj, wait=False)
+
+    # # 张开虎口
+    # end_control_to_chosse(robot_instance, 2)
+    # time.sleep(2)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_2)
+    # traj = planner.plan_to_target_joints(Right_Point_3)
+    # logger.dump_traj(traj, file_name="give_big_hand_3")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_3)
+    # traj = planner.plan_to_target_joints(Right_Point_4)
+    # logger.dump_traj(traj, file_name="give_big_hand_4")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_4)
+    # traj = planner.plan_to_target_joints(Right_Point_5)
+    # logger.dump_traj(traj, file_name="give_big_hand_5")
+    # executor.execute_traj(traj, wait=False)
+
+    # # 比ok手势
+    # end_control_to_chosse(robot_instance, 3)
+    # time.sleep(2)
+
+    # print("...等待5s后击掌返回零点位置...")
+    # time.sleep(2)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_5)
+    # traj = planner.plan_to_target_joints(Right_Point_4)
+    # logger.dump_traj(traj, file_name="give_big_hand_6")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_4)
+    # traj = planner.plan_to_target_joints(Right_Point_3)
+    # logger.dump_traj(traj, file_name="give_big_hand_7")
+    # executor.execute_traj(traj, wait=False)
+
+    # # 完全关闭
+    # end_control_to_chosse(robot_instance, 0)
+    # time.sleep(2)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_3)
+    # traj = planner.plan_to_target_joints(Right_Point_2)
+    # logger.dump_traj(traj, file_name="give_big_hand_8")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_2)
+    # traj = planner.plan_to_target_joints(Right_Point_1)
+    # logger.dump_traj(traj, file_name="give_big_hand_9")
+    # executor.execute_traj(traj, wait=False)
+
+    # print("=====================================================")
+    # planner.set_start_state(Right_Point_1)
+    # traj = planner.plan_to_target_joints(Right_Point_zero)
+    # logger.dump_traj(traj, file_name="give_big_hand_10")
+    # executor.execute_traj(traj, wait=False)    
+
     print("=====================================================")
-    planner.set_start_state(Right_Point_zero)
-    traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="give_big_hand_1")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_1.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_1)
-    traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="give_big_hand_2")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_2.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
-    # 张开虎口
+    # 比ok手势
     end_control_to_chosse(robot_instance, 2)
     time.sleep(2)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_2)
-    traj = planner.plan_to_target_joints(Right_Point_3)
-    logger.dump_traj(traj, file_name="give_big_hand_3")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_3.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_3)
-    traj = planner.plan_to_target_joints(Right_Point_4)
-    logger.dump_traj(traj, file_name="give_big_hand_4")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_4.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_4)
-    traj = planner.plan_to_target_joints(Right_Point_5)
-    logger.dump_traj(traj, file_name="give_big_hand_5")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_5.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     # 比ok手势
     end_control_to_chosse(robot_instance, 3)
@@ -539,38 +609,33 @@ def give_big_hand():
     time.sleep(2)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_5)
-    traj = planner.plan_to_target_joints(Right_Point_4)
-    logger.dump_traj(traj, file_name="give_big_hand_6")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_6.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_4)
-    traj = planner.plan_to_target_joints(Right_Point_3)
-    logger.dump_traj(traj, file_name="give_big_hand_7")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_7.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     # 完全关闭
     end_control_to_chosse(robot_instance, 0)
     time.sleep(2)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_3)
-    traj = planner.plan_to_target_joints(Right_Point_2)
-    logger.dump_traj(traj, file_name="give_big_hand_8")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_8.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_2)
-    traj = planner.plan_to_target_joints(Right_Point_1)
-    logger.dump_traj(traj, file_name="give_big_hand_9")
-    executor.execute_traj(traj, wait=False)
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_9.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
     print("=====================================================")
-    planner.set_start_state(Right_Point_1)
-    traj = planner.plan_to_target_joints(Right_Point_zero)
-    logger.dump_traj(traj, file_name="give_big_hand_10")
-    executor.execute_traj(traj, wait=False)    
+    l_traj = load_traj("./traj/give_big_hand/give_big_hand_10.json")
+    r_traj = l_to_r(l_traj)
+    publish_arm_traj(robot_arm_publisher, r_traj)
 
 "---------------------------keyboard listener----------------------------"
 class keyboardlinstener(object):
@@ -639,8 +704,8 @@ def main():
         elif choice == 4:  # 从当前位置回到0位Zero（右手）
             retreat_to_zero_left()
         elif choice == 6:  # 点赞往前（左手）
-            #give_big_hand()
-            pass
+            give_big_hand()
+            #pass
         elif choice == 8:  # 正面击掌（左手）- json读取
             high_five_right()    
         elif choice == 7:  # 侧面击掌（左手）-  实时规划
