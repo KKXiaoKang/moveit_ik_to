@@ -19,8 +19,8 @@ import tty
 import select
 from dynamic_biped.msg import robotHeadMotionData
 
-hand_max_left_pose = [30.0, -10.0]
-hand_max_right_pose = [-30.0, -10.0]
+hand_max_left_pose = [30.0, -5.0]
+hand_max_right_pose = [-30.0, -5.0]
 hand_zero_pose = [0.0, 0.0]
 hand_up_pose = [0.0, -20.0]
 

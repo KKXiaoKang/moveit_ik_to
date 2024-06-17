@@ -264,12 +264,14 @@ def grab_and_deliver_moveit():
     time.sleep(4)
 
     # 张开虎口
-    end_control_to_chosse(robot_instance, 2)
-    time.sleep(2)
+    for i in range(4):
+        end_control_to_chosse(robot_instance, 2)
+        time.sleep(0.5)
 
     # 合并爪子
-    end_control_to_chosse(robot_instance, 1)
-    time.sleep(3)
+    for i in range(3):
+        end_control_to_chosse(robot_instance, 1)
+        time.sleep(1)
 
     l_traj = load_traj("./traj/for_catch_water/grab_and_deliver_moveit_7.json")
     # publish_l_arm_traj(robot_arm_publisher, l_traj)
